@@ -1,23 +1,9 @@
-int latchPin = 10;
-int clockPin = 11;
-int dataPin = 12;
- 
-int zeroByte = B11111100;
-int oneByte = B01100000;
-int twoByte = B11011010;
-int threeByte = B11110010;
-int fourByte = B01100110;
-int fiveByte = B10110110;
-int sixByte = B10111110;
-int sevenByte = B11100000;
-int eightByte = B11111110;
-int nineByte = B11110110;
+// here will be my chess clock stuff
 
-void setup ()
-{
-  pinMode(latchPin, OUTPUT);
-  pinMode(clockPin, OUTPUT);
-  pinMode(dataPin, OUTPUT);
+void setup() {
+  // put your setup code here, to run once:
+
+Serial.begin(9600);
 }
 
 void loop() {
@@ -46,11 +32,27 @@ long hectoMinutes = milliSeconds/6000000;
 
 if(running){
   if(milliSeconds <= 0){
+    Serial.println("0 : 0 : 0 :: 0 : 0 :: 0 : 0");
     while(true){
       delay(1);
     }
   }
 }
+
+Serial.print(hectoMinutes);
+Serial.print(" : ");
+Serial.print(printedDecaMinutes);
+Serial.print(" : ");
+Serial.print(printedMinutes);
+Serial.print(" :: ");
+Serial.print(printedDecaSeconds);
+Serial.print(" : ");
+Serial.print(printedSeconds);
+Serial.print(" :: ");
+Serial.print(printedDeciSeconds);
+Serial.print(" : ");
+Serial.println(printedCentiSeconds);
+
 
 }
 
