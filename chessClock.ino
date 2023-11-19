@@ -1,9 +1,24 @@
-// here will be my chess clock stuff
+int latchPin = 10;
+int clockPin = 11;
+int dataPin = 12;
+ 
+int zeroByte = B11111100;
+int oneByte = B01100000;
+int twoByte = B11011010;
+int threeByte = B11110010;
+int fourByte = B01100110;
+int fiveByte = B10110110;
+int sixByte = B10111110;
+int sevenByte = B11100000;
+int eightByte = B11111110;
+int nineByte = B11110110;
 
-void setup() {
-  // put your setup code here, to run once:
-
-Serial.begin(9600);
+void setup ()
+{
+  Serial.begin(9600);
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
 }
 
 void loop() {
