@@ -1,3 +1,4 @@
 # chess-clock
+# shift registers
 
-öhift register PDF's, code, explanations and plans.
+Shift register PDF's, code, explanations and plans.
