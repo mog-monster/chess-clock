@@ -15,7 +15,6 @@ int nineByte = B11110110;
 
 void setup ()
 {
-  Serial.begin(9600);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
@@ -47,27 +46,11 @@ long hectoMinutes = milliSeconds/6000000;
 
 if(running){
   if(milliSeconds <= 0){
-    Serial.println("0 : 0 : 0 :: 0 : 0 :: 0 : 0");
     while(true){
       delay(1);
     }
   }
 }
-
-Serial.print(hectoMinutes);
-Serial.print(" : ");
-Serial.print(printedDecaMinutes);
-Serial.print(" : ");
-Serial.print(printedMinutes);
-Serial.print(" :: ");
-Serial.print(printedDecaSeconds);
-Serial.print(" : ");
-Serial.print(printedSeconds);
-Serial.print(" :: ");
-Serial.print(printedDeciSeconds);
-Serial.print(" : ");
-Serial.println(printedCentiSeconds);
-
 
 }
 
