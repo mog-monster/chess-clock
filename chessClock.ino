@@ -53,7 +53,6 @@ if(running){
     }
   }
 }
-
 Serial.print(hectoMinutes);
 Serial.print(" : ");
 Serial.print(printedDecaMinutes);
@@ -67,7 +66,6 @@ Serial.print(" :: ");
 Serial.print(printedDeciSeconds);
 Serial.print(" : ");
 Serial.println(printedCentiSeconds);
-
 
 }
 
