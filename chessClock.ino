@@ -43,9 +43,10 @@ long printedMinutes = minutes % 10;
 long decaMinutes = milliSeconds/600000;
 long printedDecaMinutes = decaMinutes % 10;
 long hectoMinutes = milliSeconds/6000000;
-long allSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes,
-                        printedDecaSeconds, printedSeconds, printedDeciSeconds,
-                        printedCentiSeconds};	
+long allSegments [7] = {printedCentiSeconds, printedDeciSeconds,
+                       printedSeconds, printedDecaSeconds,
+                       printedMinutes, printedDecaMinutes,
+                       hectoMinutes};	
 
 if(running){
   if(milliSeconds <= 0){
