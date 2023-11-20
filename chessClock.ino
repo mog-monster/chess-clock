@@ -12,8 +12,7 @@ int sixByte = B10111110;
 int sevenByte = B11100000;
 int eightByte = B11111110;
 int nineByte = B11110110;
-int allBytes [10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, 
-                    fiveByte, sixByte, sevenByte, eightByte, nineByte};
+int allBytes [10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, fiveByte, sixByte, sevenByte, eightByte, nineByte};
 void setup ()
 {
   pinMode(latchPin, OUTPUT);
@@ -43,10 +42,7 @@ long printedMinutes = minutes % 10;
 long decaMinutes = milliSeconds/600000;
 long printedDecaMinutes = decaMinutes % 10;
 long hectoMinutes = milliSeconds/6000000;
-long allSegments [7] = {printedCentiSeconds, printedDeciSeconds,
-                       printedSeconds, printedDecaSeconds,
-                       printedMinutes, printedDecaMinutes,
-                       hectoMinutes};	
+long allSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
 
 if(running){
   if(milliSeconds <= 0){
