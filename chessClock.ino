@@ -1,6 +1,7 @@
 int latchPin = 10;
 int clockPin = 11;
 int dataPin = 12;
+int buttonPin = A5;
  
 int zeroByte = B11111100;
 int oneByte = B01100000;
@@ -18,10 +19,15 @@ void setup ()
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
 }
 
 void loop() {
 
+  bool buttonPressed = digitalRead(buttonPin);
+  if(!buttonPressed){
+    return;
+  }
   static bool running;
   long removalAmount = 10000;
   long milliMinus = millis();
