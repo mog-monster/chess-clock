@@ -26,24 +26,23 @@ void setup ()
 }
 
 void loop() {
-  static bool timersRunning;
-  static bool timersFinished;
-  static bool mainButtonChanged;
-  bool mainButtonPressed = digitalRead(mainButtonPin);
-  mainButtonPressed = !mainButtonPressed;
-  if(mainButtonChanged){
-    
-  }
-  mainButtonChanged = mainButtonPressed;
-  if()
-  if((mainButtonPressed)&&(mainButtonPressed!=mainButtonChanged)){
+  
+    static bool mainButtonChanged;
+    static bool timersRunning;
+    static bool timersFinished;
+    bool mainButtonPressed = digitalRead(mainButtonPin);
+    mainButtonPressed = !mainButtonPressed;
+    if((mainButtonPressed) && (!mainButtonChanged)){
+    mainButtonChanged = 1;
     timersRunning = !timersRunning;
-  }
-  if(timersRunning){
+}
+    mainButtonChanged = mainButtonPressed;
+}  
+if(timersRunning){
     long totalMilliSeconds = white(totalMilliSeconds);
   }
   else{
-    long totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    long totalMilliSeconds =       pausedTimers(totalMilliSeconds);
 
   }
 }
