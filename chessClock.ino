@@ -1,7 +1,16 @@
+bool running;
+bool skipMainButton;
+bool mainButtonPressed;
+bool mainButtonChanged;
+bool timersFinished;
+bool timersStarted;
+
+long removalAmount = 10000;
+
 int latchPin = 10;
 int clockPin = 11;
 int dataPin = 12;
-int buttonPin = A5;
+int mainButtonPin = A5;
  
 int zeroByte = B11111100;
 int oneByte = B01100000;
@@ -14,30 +23,52 @@ int sevenByte = B11100000;
 int eightByte = B11111110;
 int nineByte = B11110110;
 int allBytes [10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, fiveByte, sixByte, sevenByte, eightByte, nineByte};
+
 void setup ()
 {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
   pinMode(buttonPin, INPUT_PULLUP);
+  while(!programStarted);
+    beforeProgram() = programStarted;  
+
 }
 
 void loop() {
 
-  bool buttonPressed = digitalRead(buttonPin);
-  if(!buttonPressed){
-    return;
+  mainButtonPressed = digitalRead(mainButtonPin);
+  if(!mainButtonPressed){
+    skipMainButton = 0;
   }
-  static bool running;
-  long removalAmount = 10000;
+  else{
+    if(!skipMainButton);
+      mainButtonChanged = 1;
+      skipMainButton = 1;
+    }
+}
+if(mainButtonChanged){
+  running = !running;
+}
+if(running){
+  white();
+}
+
+int beforeProgram(){
+  mainButtonpressed = digitalRead(mainButtonPin);
+  for(mains)
+  if(mainButtonPressed);
+    return 1;
+  else;
+    return 0;
+}
+void white(){
+  
   long milliMinus = millis();
   long milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
-  if(deciSeconds==1){
-    running = 1;
-  }
   long printedDeciSeconds = deciSeconds % 10;
   long seconds = milliSeconds/1000;
   long printedSeconds = seconds % 10;
@@ -49,8 +80,6 @@ void loop() {
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
   long allSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
-
-  if(running){
     if(milliSeconds <= 0){
       while(true){
         delay(1);
@@ -63,4 +92,6 @@ void loop() {
 
   }
   digitalWrite(latchPin, HIGH);
+}
+
 }
