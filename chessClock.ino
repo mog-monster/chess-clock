@@ -24,13 +24,15 @@ void setup ()
 
 void loop() {
 
-  bool buttonPressed = digitalRead(buttonPin);
-  if(!buttonPressed){
-    return;
-  }
+  bool buttonPressed = !digitalRead(buttonPin);
   static bool running;
   long removalAmount = 10000;
   long milliMinus = millis();
+  if(buttonPressed){
+    long buttonMillis = milliMinus;
+    return;
+  milliMinus = buttonMillis;
+  }
   long milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
