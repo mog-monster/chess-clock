@@ -1,4 +1,4 @@
-long startingAmount = 10000;
+long totalMilliSeconds = 10000;
 
 int latchPin = 10;
 int clockPin = 11;
@@ -28,23 +28,26 @@ void setup ()
 void loop() {
   static bool timersRunning;
   static bool timersFinished;
-  long totalMilliSeconds = startingAmount;
+  static bool mainButtonChanged;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
-  bool mainButtonChanged = mainButtonPressed;
+  if(mainButtonChanged){
+    
+  }
+  mainButtonChanged = mainButtonPressed;
+  if()
   if((mainButtonPressed)&&(mainButtonPressed!=mainButtonChanged)){
     timersRunning = !timersRunning;
   }
   if(timersRunning){
-    long whiteMilliseconds = white();
+    long totalMilliSeconds = white(totalMilliSeconds);
   }
   else{
-    long totalMilliseconds = pausedTimers();
+    long totalMilliSeconds = pausedTimers(totalMilliSeconds);
 
   }
 }
-long pausedTimers(){
-  long milliSeconds = startingAmount;
+long pausedTimers(long milliSeconds){
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
@@ -67,9 +70,9 @@ long pausedTimers(){
 }
 
 
-long white(){
+long white(long milliSeconds){
   long milliMinus = millis();
-  long milliSeconds = startingAmount - milliMinus;
+  milliSeconds = milliSeconds - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
