@@ -1,4 +1,3 @@
 # chess-clock
-# shift registers
-
-Shift register PDF's, code, explanations and plans.
+# arduino
+Main is undeveloped and useless at this point, branches look at different interpretations.
