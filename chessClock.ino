@@ -33,8 +33,8 @@ void loop() {
     bool mainButtonPressed = digitalRead(mainButtonPin);
     mainButtonPressed = !mainButtonPressed;
     if((mainButtonPressed) && (!mainButtonChanged)){
-    mainButtonChanged = 1;
-    timersRunning = !timersRunning;
+        mainButtonChanged = 1;
+        timersRunning = !timersRunning;
 }
     mainButtonChanged = mainButtonPressed;
 }  
