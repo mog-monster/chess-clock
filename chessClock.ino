@@ -5,30 +5,41 @@ void setup() {
   
   pinMode(mainButtonPin, INPUT_PULLUP);
 		Serial.begin(9600);
+    Serial.print(totalMilliSeconds);
+    Serial.println(" - totalMilliSeconds at 1");
 }
 
 void loop() {
   
-    static bool mainButtonChanged;
-    static bool timersRunning;
-    static bool timersFinished;
-    bool mainButtonPressed = digitalRead(mainButtonPin);
-    mainButtonPressed = !mainButtonPressed;
-    if((mainButtonPressed) && (!mainButtonChanged)){
-        mainButtonChanged = 1;
-        timersRunning = !timersRunning;
-}
-    mainButtonChanged = mainButtonPressed;  
+  Serial.print(totalMilliSeconds);
+  Serial.println(" - totalMilliSeconds at 2");
+  static bool mainButtonChanged;
+  static bool timersRunning;
+  static bool timersFinished;
+  bool mainButtonPressed = digitalRead(mainButtonPin);
+  mainButtonPressed = !mainButtonPressed;
+  if((mainButtonPressed) && (!mainButtonChanged)){
+      mainButtonChanged = 1;
+      timersRunning = !timersRunning;
+  }
+  mainButtonChanged = mainButtonPressed;
+  Serial.print(totalMilliSeconds);
+  Serial.println(" - totalMilliSeconds at 3");
   if(timersRunning){
     totalMilliSeconds = white(totalMilliSeconds);
+    Serial.print(totalMilliSeconds);
+  Serial.println(" - totalMilliSeconds at 4");
   }
   else{
-    totalMilliSeconds =  pausedTimers(totalMilliSeconds);
-
+    totalMilliSeconds = pausedTimers(totalMilliSeconds);
+  Serial.print(totalMilliSeconds);
+  Serial.println(" - totalMilliSeconds at 5");
   }
 }
 
 long pausedTimers(long milliSeconds){
+    Serial.print(totalMilliSeconds);
+    Serial.println(" - totalMilliSeconds at 6");
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
@@ -55,9 +66,13 @@ long pausedTimers(long milliSeconds){
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
+    Serial.print(totalMilliSeconds);
+    Serial.println(" - totalMilliSeconds at 7");
 }
 
 long white(long milliSeconds){
+      Serial.print(totalMilliSeconds);
+    Serial.println(" - totalMilliSeconds at 8");
   long milliMinus = millis();
   milliSeconds = milliSeconds - milliMinus;
   long centiSeconds = milliSeconds / 10;
@@ -86,4 +101,6 @@ long white(long milliSeconds){
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
+      Serial.print(totalMilliSeconds);
+    Serial.println(" - totalMilliSeconds at 9");
 }
