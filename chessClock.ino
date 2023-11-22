@@ -1,4 +1,5 @@
-long totalMilliSeconds = 10000;
+long startingAmount = 10000;
+long totalMilliSeconds = startingAmount;
 int mainButtonPin = A5;
 
 void setup() {
@@ -15,27 +16,33 @@ void loop() {
   static long pausedStart;
   static long pausedEnd;
   static long pausedDuration;
-  static bool careAboutPause;
+  bool careAboutPause;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
       mainButtonChanged = 1;
       timersRunning = !timersRunning;
     if(timersRunning){
-      pausedStart = millis();
+      pausedEnd = millis();
       careAboutPause = 1;
     }
     else{
-      pausedEnd = millis();
+      pausedStart = millis();
     }
   }
   mainButtonChanged = mainButtonPressed;
-  if(timersRunning){
-    pausedDuration = pausedEnd - pausedStart; 
-    totalMilliSeconds = white(totalMilliSeconds, pausedDuration, careAboutPause);
+  if(totalMilliSeconds == 0){
+    delay(5000);
+    finishedTimers();
   }
   else{
-    totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    if(timersRunning){
+      pausedDuration = pausedEnd - pausedStart; 
+      totalMilliSeconds = white(totalMilliSeconds, pausedDuration, careAboutPause);
+    }
+    else{
+      totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    }
   }
 }
 
@@ -71,7 +78,7 @@ long pausedTimers(long milliSeconds){
 
 long white(long milliSeconds, long pausedDuration, bool care){
   long milliMinus = millis();
-  milliSeconds = milliSeconds - milliMinus;
+  milliSeconds = startingAmount - milliMinus;
   if(care){
   milliSeconds = milliSeconds + pausedDuration;
   }
@@ -88,6 +95,9 @@ long white(long milliSeconds, long pausedDuration, bool care){
   long decaMinutes = milliSeconds/600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
+  if(milliSeconds<=0){
+    milliSeconds = 0;
+  }
   Serial.print(hectoMinutes);
   Serial.print(" : ");
   Serial.print(printedDecaMinutes);
@@ -102,4 +112,8 @@ long white(long milliSeconds, long pausedDuration, bool care){
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
   return(milliSeconds);
+}
+
+void finishedTimers(){
+  Serial.println("good g.");
 }
