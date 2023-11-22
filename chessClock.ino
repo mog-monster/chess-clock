@@ -36,8 +36,7 @@ void loop() {
         mainButtonChanged = 1;
         timersRunning = !timersRunning;
 }
-    mainButtonChanged = mainButtonPressed;
-}  
+    mainButtonChanged = mainButtonPressed;  
 if(timersRunning){
     long totalMilliSeconds = white(totalMilliSeconds);
   }
