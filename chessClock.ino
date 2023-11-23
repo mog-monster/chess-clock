@@ -1,4 +1,4 @@
-long removalAmount = 10000;
+const long removalAmount = 10000;
 long totalMilliSeconds = removalAmount;
 long trackingMilliMinus;
 long totalPaused;
@@ -15,6 +15,8 @@ void loop() {
   static bool mainButtonChanged;
   static bool timersRunning;
   static bool timersFinished = 0;
+  Serial.print("milliSeconds is ");
+  Serial.println(totalMilliSeconds);
   if(totalMilliSeconds == 0){
     timersFinished = 1;
   }
@@ -37,12 +39,12 @@ void loop() {
   mainButtonChanged = mainButtonPressed;
   if(timersFinished){
     if(backToPause){
-      totalMilliSeconds = 10000;
-      timersRunning = 0;
-      pausedStart = trackingMilliMinus;
+      totalMilliSeconds = removalAmount;
+      delay(3000);
     }
     else{
       finishedTimers();
+      pausedStart = trackingMilliMinus;
     }
   }
   else{
