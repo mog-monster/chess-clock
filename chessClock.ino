@@ -14,7 +14,7 @@ void loop() {
   
   static bool mainButtonChanged;
   static bool timersRunning;
-  static bool timersFinished = 0;
+  bool timersFinished = 0;
   Serial.print("milliSeconds is ");
   Serial.println(totalMilliSeconds);
   if(totalMilliSeconds == 0){
