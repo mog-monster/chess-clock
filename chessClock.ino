@@ -1,11 +1,14 @@
-long totalMilliSeconds = 10000;
-long milliMinus = millis();
+long removalAmount = 10000;
+long totalMilliSeconds = removalAmount;
+long constantMillis = millis();
+long trackingMilliMinus;
+long pausedMillis;
 int mainButtonPin = A5;
 
 void setup() {
   
   pinMode(mainButtonPin, INPUT_PULLUP);
-		Serial.begin(9600);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -26,7 +29,7 @@ void loop() {
       careAboutPause = 1;
     }
     else{
-      pausedStart = milliMinus;
+      pausedStart = trackingMilliMinus;
     }
   }
   mainButtonChanged = mainButtonPressed;
@@ -69,12 +72,14 @@ long pausedTimers(long milliSeconds){
 }
 
 long white(long milliSeconds, long pausedStart, bool care){
-  milliMinus = millis();
+  long milliMinus = millis();
+  trackingMilliMinus = milliMinus;
   if(care){
-  long pausedDuration = milliMinus - pausedStart;
-  milliSeconds = milliSeconds + pausedDuration;
+  	long pausedDuration = milliMinus - pausedStart;
+    pausedMillis = pausedMillis + pausedDuration;
   }
-  milliSeconds = milliSeconds - milliMinus;
+  milliMinus = milliMinus - pausedMillis;
+  milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
