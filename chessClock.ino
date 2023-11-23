@@ -1,5 +1,6 @@
 long removalAmount = 10000;
 long totalMilliSeconds = removalAmount;
+long valueBelowZero;
 long trackingMilliMinus;
 long totalPaused;
 int mainButtonPin = A5;
@@ -37,7 +38,8 @@ void loop() {
   mainButtonChanged = mainButtonPressed;
   if(timersFinished){
     if(backToPause){
-      totalMilliSeconds = 10000;
+      totalMilliSeconds = removalAmount;
+      totalPaused = totalPaused + removalAmount;
       timersRunning = 0;
       pausedStart = trackingMilliMinus;
     }
@@ -92,6 +94,8 @@ long white(long milliSeconds, long pausedStart, bool care){
   	long pausedDuration = milliMinus - pausedStart;
     totalPaused = totalPaused + pausedDuration;
   }
+  totalPaused = totalPaused - valueBelowZero;
+  valueBelowZero = 0;
   milliMinus = milliMinus - totalPaused;
   milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
@@ -108,6 +112,7 @@ long white(long milliSeconds, long pausedStart, bool care){
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
   if(milliSeconds <= 0){
+    valueBelowZero = milliSeconds;
     milliSeconds = 0;
   }
   Serial.print(hectoMinutes);
