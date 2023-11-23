@@ -2,6 +2,7 @@ long removalAmount = 10000;
 long totalMilliSeconds = removalAmount;
 long trackingMilliMinus;
 long totalPaused;
+long valueUnderZero;
 int mainButtonPin = A5;
 
 void setup() {
@@ -12,9 +13,15 @@ void setup() {
 
 void loop() {
   
+  Serial.print("MilliSeconds loop start: ");
+  Serial.println(totalMilliSeconds);
+  Serial.print("trackingMilliMinus loop start: ");
+  Serial.println(trackingMilliMinus);
+  Serial.print("totalPaused loop start: ");
+  Serial.println(totalPaused);
   static bool mainButtonChanged;
   static bool timersRunning;
-  static bool timersFinished = 0;
+  bool timersFinished = 0;
   if(totalMilliSeconds == 0){
     timersFinished = 1;
   }
@@ -37,9 +44,10 @@ void loop() {
   mainButtonChanged = mainButtonPressed;
   if(timersFinished){
     if(backToPause){
-      totalMilliSeconds = 10000;
+      totalMilliSeconds = removalAmount;
       timersRunning = 0;
       pausedStart = trackingMilliMinus;
+      delay(1000);
     }
     else{
       finishedTimers();
@@ -87,13 +95,35 @@ long pausedTimers(long milliSeconds){
 
 long white(long milliSeconds, long pausedStart, bool care){
   long milliMinus = millis();
+  Serial.print("MilliMinus step 1: ");
+  Serial.println(milliMinus);
   trackingMilliMinus = milliMinus;
   if(care){
   	long pausedDuration = milliMinus - pausedStart;
+    Serial.print("Paused duration step 1: ");
+    Serial.println(pausedDuration);
     totalPaused = totalPaused + pausedDuration;
+    Serial.print("TotalPaused step 1: ");
+    Serial.println(totalPaused);
   }
+  totalPaused = totalPaused - valueUnderZero;
+  Serial.print("TotalPaused step 2: ");
+  Serial.println(totalPaused);
+  valueUnderZero = 0;
   milliMinus = milliMinus - totalPaused;
   milliSeconds = removalAmount - milliMinus;
+  Serial.print("MilliMinus step 2: ");
+  Serial.println(milliMinus);
+  if(milliSeconds <= 0){
+    valueUnderZero = milliSeconds;
+    milliSeconds = 0;
+  Serial.print("MilliSeconds after calculations: ");
+  Serial.println(milliSeconds);
+  Serial.print("trackingMilliMinus after calculations: ");
+  Serial.println(trackingMilliMinus);
+  Serial.print("totalPaused after calculations: ");
+  Serial.println(totalPaused);
+  }
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
@@ -107,9 +137,6 @@ long white(long milliSeconds, long pausedStart, bool care){
   long decaMinutes = milliSeconds/600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
-  if(milliSeconds <= 0){
-    milliSeconds = 0;
-  }
   Serial.print(hectoMinutes);
   Serial.print(" : ");
   Serial.print(printedDecaMinutes);
