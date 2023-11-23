@@ -1,3 +1,3 @@
 # chess-clock
 # arduino
-Use of Serial for debugging code, here debugging push-button-2.0
+In current state functions as a singular timer with a push-button.
