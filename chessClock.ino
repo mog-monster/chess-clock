@@ -2,6 +2,7 @@ long removalAmount = 10000;
 long totalMilliSeconds = removalAmount;
 long trackingMilliMinus;
 long totalPaused;
+long valueUnderZero;
 int mainButtonPin = A5;
 
 void setup() {
@@ -11,16 +12,21 @@ void setup() {
 }
 
 void loop() {
-  
+
   static bool mainButtonChanged;
   static bool timersRunning;
-  static bool timersFinished;
+  bool timersFinished = 0;
+  if(totalMilliSeconds == 0){
+    timersFinished = 1;
+  }
   static long pausedStart;
   bool careAboutPause = 0;
+  bool backToPause = 0;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
     mainButtonChanged = 1;
+    backToPause = 1;
     timersRunning = !timersRunning;
     if(timersRunning){
       careAboutPause = 1;
@@ -30,11 +36,25 @@ void loop() {
     }
   }
   mainButtonChanged = mainButtonPressed;
-  if(timersRunning){
-    totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
+  if(timersFinished){
+    if(backToPause){
+      totalMilliSeconds = removalAmount;
+      totalPaused = totalPaused + removalAmount;
+      timersRunning = 0;
+      pausedStart = trackingMilliMinus;
+      delay(1000);
+    }
+    else{
+      finishedTimers();
+    }
   }
   else{
-    totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    if(timersRunning){
+      totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
+    }
+    else{
+      totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    }
   }
 }
 
@@ -75,8 +95,14 @@ long white(long milliSeconds, long pausedStart, bool care){
   	long pausedDuration = milliMinus - pausedStart;
     totalPaused = totalPaused + pausedDuration;
   }
+  totalPaused = totalPaused - valueUnderZero;
+  valueUnderZero = 0;
   milliMinus = milliMinus - totalPaused;
   milliSeconds = removalAmount - milliMinus;
+  if(milliSeconds <= 0){
+    valueUnderZero = milliSeconds;
+    milliSeconds = 0;
+  }
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
@@ -104,4 +130,8 @@ long white(long milliSeconds, long pausedStart, bool care){
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
   return(milliSeconds);
+}
+
+void finishedTimers(){
+  Serial.println("good g.");
 }
