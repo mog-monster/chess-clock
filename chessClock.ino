@@ -1,11 +1,14 @@
-long startingAmount = 10000;
-long totalMilliSeconds = startingAmount;
+long removalAmount = 10000;
+long totalMilliSeconds = removalAmount;
+long constantMillis = millis();
+long trackingMilliMinus;
+long pausedMillis;
 int mainButtonPin = A5;
 
 void setup() {
   
   pinMode(mainButtonPin, INPUT_PULLUP);
-		Serial.begin(9600);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -20,29 +23,21 @@ void loop() {
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
-      mainButtonChanged = 1;
-      timersRunning = !timersRunning;
+    mainButtonChanged = 1;
+    timersRunning = !timersRunning;
     if(timersRunning){
-      pausedEnd = millis();
       careAboutPause = 1;
     }
     else{
-      pausedStart = millis();
+      pausedStart = trackingMilliMinus;
     }
   }
   mainButtonChanged = mainButtonPressed;
-  if(totalMilliSeconds == 0){
-    delay(5000);
-    finishedTimers();
+  if(timersRunning){
+    totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
   }
   else{
-    if(timersRunning){
-      pausedDuration = pausedEnd - pausedStart; 
-      totalMilliSeconds = white(totalMilliSeconds, pausedDuration, careAboutPause);
-    }
-    else{
-      totalMilliSeconds = pausedTimers(totalMilliSeconds);
-    }
+    totalMilliSeconds = pausedTimers(totalMilliSeconds);
   }
 }
 
@@ -73,15 +68,18 @@ long pausedTimers(long milliSeconds){
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
-    return(milliSeconds);
+  return(milliSeconds);
 }
 
-long white(long milliSeconds, long pausedDuration, bool care){
+long white(long milliSeconds, long pausedStart, bool care){
   long milliMinus = millis();
-  milliSeconds = startingAmount - milliMinus;
+  trackingMilliMinus = milliMinus;
   if(care){
-  milliSeconds = milliSeconds + pausedDuration;
+  	long pausedDuration = milliMinus - pausedStart;
+    pausedMillis = pausedMillis + pausedDuration;
   }
+  milliMinus = milliMinus - pausedMillis;
+  milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
@@ -95,9 +93,6 @@ long white(long milliSeconds, long pausedDuration, bool care){
   long decaMinutes = milliSeconds/600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
-  if(milliSeconds<=0){
-    milliSeconds = 0;
-  }
   Serial.print(hectoMinutes);
   Serial.print(" : ");
   Serial.print(printedDecaMinutes);
@@ -112,8 +107,4 @@ long white(long milliSeconds, long pausedDuration, bool care){
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
   return(milliSeconds);
-}
-
-void finishedTimers(){
-  Serial.println("good g.");
 }
