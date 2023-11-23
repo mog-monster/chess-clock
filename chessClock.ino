@@ -15,12 +15,20 @@ void loop() {
   static bool mainButtonChanged;
   static bool timersRunning;
   static bool timersFinished;
+  if(totalMilliSeconds <= 0){
+    timersFinished = 1;
+  }
+  else{
+    timersFinished = 0;
+  }
   static long pausedStart;
   bool careAboutPause = 0;
+  bool backToPause = 0;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
     mainButtonChanged = 1;
+    backToPause = 1;
     timersRunning = !timersRunning;
     if(timersRunning){
       careAboutPause = 1;
@@ -30,11 +38,22 @@ void loop() {
     }
   }
   mainButtonChanged = mainButtonPressed;
-  if(timersRunning){
-    totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
+  if(timersFinished){
+    if(backToPause){
+      totalMilliSeconds = 10000;
+      timersRunning = 0;
+    }
+    else{
+      finishedTimers();
+    }
   }
   else{
-    totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    if(timersRunning){
+      totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
+    }
+    else{
+      totalMilliSeconds = pausedTimers(totalMilliSeconds);
+    }
   }
 }
 
@@ -104,4 +123,8 @@ long white(long milliSeconds, long pausedStart, bool care){
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
   return(milliSeconds);
+}
+
+void finishedTimers(){
+  Serial.println("good g.");
 }
