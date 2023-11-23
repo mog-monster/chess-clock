@@ -16,7 +16,7 @@ void loop() {
   static bool timersRunning;
   static bool timersFinished;
   static long pausedStart;
-  bool careAboutPause;
+  bool careAboutPause = 0;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
