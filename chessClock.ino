@@ -1,8 +1,7 @@
 long removalAmount = 10000;
 long totalMilliSeconds = removalAmount;
-long constantMillis = millis();
 long trackingMilliMinus;
-long pausedMillis;
+long totalPaused;
 int mainButtonPin = A5;
 
 void setup() {
@@ -17,8 +16,6 @@ void loop() {
   static bool timersRunning;
   static bool timersFinished;
   static long pausedStart;
-  static long pausedEnd;
-  static long pausedDuration;
   bool careAboutPause;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
@@ -76,9 +73,9 @@ long white(long milliSeconds, long pausedStart, bool care){
   trackingMilliMinus = milliMinus;
   if(care){
   	long pausedDuration = milliMinus - pausedStart;
-    pausedMillis = pausedMillis + pausedDuration;
+    totalPaused = totalPaused + pausedDuration;
   }
-  milliMinus = milliMinus - pausedMillis;
+  milliMinus = milliMinus - totalPaused;
   milliSeconds = removalAmount - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
