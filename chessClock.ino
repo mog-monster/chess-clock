@@ -1,4 +1,5 @@
 long totalMilliSeconds = 10000;
+long milliMinus = millis();
 int mainButtonPin = A5;
 
 void setup() {
@@ -15,24 +16,22 @@ void loop() {
   static long pausedStart;
   static long pausedEnd;
   static long pausedDuration;
-  static bool careAboutPause;
+  bool careAboutPause;
   bool mainButtonPressed = digitalRead(mainButtonPin);
   mainButtonPressed = !mainButtonPressed;
   if((mainButtonPressed) && (!mainButtonChanged)){
-      mainButtonChanged = 1;
-      timersRunning = !timersRunning;
+    mainButtonChanged = 1;
+    timersRunning = !timersRunning;
     if(timersRunning){
-      pausedStart = millis();
       careAboutPause = 1;
     }
     else{
-      pausedEnd = millis();
+      pausedStart = milliMinus;
     }
   }
   mainButtonChanged = mainButtonPressed;
   if(timersRunning){
-    pausedDuration = pausedEnd - pausedStart; 
-    totalMilliSeconds = white(totalMilliSeconds, pausedDuration, careAboutPause);
+    totalMilliSeconds = white(totalMilliSeconds, pausedStart, careAboutPause);
   }
   else{
     totalMilliSeconds = pausedTimers(totalMilliSeconds);
@@ -66,15 +65,16 @@ long pausedTimers(long milliSeconds){
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
-    return(milliSeconds);
+  return(milliSeconds);
 }
 
-long white(long milliSeconds, long pausedDuration, bool care){
-  long milliMinus = millis();
-  milliSeconds = milliSeconds - milliMinus;
+long white(long milliSeconds, long pausedStart, bool care){
+  milliMinus = millis();
   if(care){
+  long pausedDuration = milliMinus - pausedStart;
   milliSeconds = milliSeconds + pausedDuration;
   }
+  milliSeconds = milliSeconds - milliMinus;
   long centiSeconds = milliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = milliSeconds/100;
