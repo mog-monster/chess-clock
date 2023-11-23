@@ -14,12 +14,9 @@ void loop() {
   
   static bool mainButtonChanged;
   static bool timersRunning;
-  static bool timersFinished;
-  if(totalMilliSeconds <= 0){
+  static bool timersFinished = 0;
+  if(totalMilliSeconds == 0){
     timersFinished = 1;
-  }
-  else{
-    timersFinished = 0;
   }
   static long pausedStart;
   bool careAboutPause = 0;
@@ -42,6 +39,7 @@ void loop() {
     if(backToPause){
       totalMilliSeconds = 10000;
       timersRunning = 0;
+      pausedStart = trackingMilliMinus;
     }
     else{
       finishedTimers();
@@ -109,6 +107,9 @@ long white(long milliSeconds, long pausedStart, bool care){
   long decaMinutes = milliSeconds/600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = milliSeconds/6000000;
+  if(milliSeconds <= 0){
+    milliSeconds = 0;
+  }
   Serial.print(hectoMinutes);
   Serial.print(" : ");
   Serial.print(printedDecaMinutes);
