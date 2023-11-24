@@ -1,4 +1,4 @@
-long removalAmount = 10000;
+long removalAmount = 1000;
 long totalMilliSeconds = removalAmount;
 long trackingMilliMinus;
 long totalPaused;
@@ -81,7 +81,7 @@ long pausedTimers(long milliSeconds){
   Serial.print(printedDecaSeconds);
   Serial.print(" : ");
   Serial.print(printedSeconds);
-  Serial.print(" :: ");
+  Serial.print(". :: ");
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
@@ -125,7 +125,7 @@ long white(long milliSeconds, long pausedStart, bool care){
   Serial.print(printedDecaSeconds);
   Serial.print(" : ");
   Serial.print(printedSeconds);
-  Serial.print(" :: ");
+  Serial.print(". :: ");
   Serial.print(printedDeciSeconds);
   Serial.print(" : ");
   Serial.println(printedCentiSeconds);
@@ -133,5 +133,5 @@ long white(long milliSeconds, long pausedStart, bool care){
 }
 
 void finishedTimers(){
-  Serial.println("good g.");
+  Serial.println("g : o : o :: d : g. ::   :");
 }
