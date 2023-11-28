@@ -4,20 +4,26 @@ long trackingMilliMinus = 1;
 long trackingMilliPlus;
 long totalPaused = 1;
 long valueUnderZero;
-int mainButtonPin = A5;
-int minutesKnob = A3;
-int secondsKnob = A4;
+int whiteButtonPin = A5;
+int blackButtonPin = A4;
+int pauseButtonPin = A3;
+int otherButtonPin = A2;
+int secondsKnob = A1;
+int minutesKnob = A0;
 
 void setup() {
-  
-  pinMode(mainButtonPin, INPUT_PULLUP);
+
+  pinMode(whiteButtonPin, INPUT_PULLUP);
+  pinMode(blackButtonPin, INPUT_PULLUP);
+  pinMode(pauseButtonPin, INPUT_PULLUP);
+  pinMode(otherButtonPin, INPUT_PULLUP);
   Serial.begin(9600);
   Serial.println();
 }
 
 void loop() {
 
-  static bool mainButtonChanged;
+  static bool pauseButtonChanged;
   static bool timersRunning;
   bool timersFinished = 0;
   if(totalMilliSeconds == 0){
@@ -26,10 +32,10 @@ void loop() {
   static long pausedStart = 1;
   bool careAboutPause = 0;
   bool backToPause = 0;
-  bool mainButtonPressed = digitalRead(mainButtonPin);
-  mainButtonPressed = !mainButtonPressed;
-  if((mainButtonPressed) && (!mainButtonChanged)){
-    mainButtonChanged = 1;
+  bool pauseButtonPressed = digitalRead(pauseButtonPin);
+  pauseButtonPressed = !pauseButtonPressed;
+  if((pauseButtonPressed) && (!pauseButtonChanged)){
+    pauseButtonChanged = 1;
     backToPause = 1;
     timersRunning = !timersRunning;
     if(timersRunning){
@@ -43,7 +49,7 @@ void loop() {
     }
     baseMilliSeconds = totalMilliSeconds;
   }
-  mainButtonChanged = mainButtonPressed;
+  pauseButtonChanged = pauseButtonPressed;
   if(timersFinished){
     if(backToPause){
       baseMilliSeconds = 1;
@@ -69,13 +75,32 @@ void loop() {
 
 
 void pausedTimers(){
-  long analogInOne = analogRead(A4);
-  long analogInTwo = analogRead(A3);
-  long mapOne = map(analogInOne, 0, 1023, 0, 19);
-  long mapTwo = map(analogInTwo, 0, 1023, 0, 99);
-  long halfMinuteAdd = mapOne*30000;
-  long decaMinuteAdd = mapTwo*600000;
-  totalMilliSeconds = baseMilliSeconds + halfMinuteAdd + decaMinuteAdd;  
+  static bool otherButtonChanged;
+  static bool doAddition = 1;
+  bool otherButtonPressed = digitalRead(otherButtonPin);
+  otherButtonPressed = !otherButtonPressed;
+    if((otherButtonPressed) && (!otherButtonChanged)){
+	  doAddition = !doAddition;
+    }
+  otherButtonChanged = otherButtonPressed;
+  long minutesInput = analogRead(minutesKnob);
+  long secondsInput = analogRead(secondsKnob);
+  long minutesMap = map(minutesInput, 0, 1023, 0, 19);
+  long secondsMap = map(secondsInput, 0, 1023, 0, 99);
+  long halfMinuteAdd = minutesMap*30000;
+  long decaMinuteAdd = secondsMap*600000;
+  if(doAddition){
+    totalMilliSeconds = baseMilliSeconds + halfMinuteAdd + decaMinuteAdd;
+  }
+  else{
+    totalMilliSeconds = baseMilliSeconds - halfMinuteAdd - decaMinuteAdd;
+  }
+  if(totalMilliSeconds > 59999999){
+    totalMilliSeconds = 59999999;
+  }
+  if(totalMilliSeconds < 1){
+    totalMilliSeconds = 1;
+  }
   long centiSeconds = totalMilliSeconds / 10;
   long printedCentiSeconds = centiSeconds % 10;
   long deciSeconds = totalMilliSeconds/100;
