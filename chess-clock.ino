@@ -1,9 +1,15 @@
 long baseMilliSeconds = 1;
-long totalMilliSeconds = 1;
-long trackingMilliMinus = 1;
-long trackingMilliPlus;
+long whiteMilliSeconds = 1;
+long blackMilliSeconds = 1;
+long trackingWhiteMinus = 1;
+long trackingBlackMinus = 1;
+long trackingWhitePlus;
+long trackingBlackPlus;
 long totalPaused = 1;
-long valueUnderZero;
+long totalBlackPaused = 1;
+long totalWhitePaused = 1;
+long whiteValueUnderZero;
+long blackValueUnderZero;
 int whiteButtonPin = A5;
 int blackButtonPin = A4;
 int pauseButtonPin = A3;
@@ -130,6 +136,49 @@ void pausedTimers(){
 }
 
 void white(long pausedStart, bool care){
+  long milliMinus = millis();
+  trackingMilliMinus = milliMinus;
+  if(care){
+  	long pausedDuration = milliMinus - pausedStart;
+    totalPaused = totalPaused + pausedDuration;
+  }
+  totalPaused = totalPaused - valueUnderZero;  
+  valueUnderZero = 0;
+  milliMinus = milliMinus - totalPaused;
+  totalMilliSeconds = baseMilliSeconds - milliMinus;
+  if(totalMilliSeconds <= 0){
+    valueUnderZero = totalMilliSeconds;
+    totalMilliSeconds = 0;
+  }
+  long centiSeconds = totalMilliSeconds / 10;
+  long printedCentiSeconds = centiSeconds % 10;
+  long deciSeconds = totalMilliSeconds/100;
+  long printedDeciSeconds = deciSeconds % 10;
+  long seconds = totalMilliSeconds/1000;
+  long printedSeconds = seconds % 10;
+  long decaSeconds = totalMilliSeconds/10000;
+  long printedDecaSeconds = decaSeconds % 6;
+  long minutes = totalMilliSeconds/60000;
+  long printedMinutes = minutes % 10;
+  long decaMinutes = totalMilliSeconds/600000;
+  long printedDecaMinutes = decaMinutes % 10;
+  long hectoMinutes = totalMilliSeconds/6000000;
+  Serial.print(hectoMinutes);
+  Serial.print(" : ");
+  Serial.print(printedDecaMinutes);
+  Serial.print(" : ");
+  Serial.print(printedMinutes);
+  Serial.print(" :: ");
+  Serial.print(printedDecaSeconds);
+  Serial.print(" : ");
+  Serial.print(printedSeconds);
+  Serial.print(". :: ");
+  Serial.print(printedDeciSeconds);
+  Serial.print(" : ");
+  Serial.println(printedCentiSeconds);
+}
+
+void black(long pausedStart, bool care){
   long milliMinus = millis();
   trackingMilliMinus = milliMinus;
   if(care){
