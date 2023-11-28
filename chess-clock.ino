@@ -1,4 +1,5 @@
-long baseMilliSeconds = 1;
+long whiteBase = 1;
+long blackBase = 1;
 long whiteMilliSeconds = 1;
 long blackMilliSeconds = 1;
 long trackingWhiteMinus = 1;
@@ -29,41 +30,53 @@ void setup() {
 
 void loop() {
 
+  static bool whiteTurn = 1;
   static bool pauseButtonChanged;
   static bool timersRunning;
   bool timersFinished = 0;
-  if(totalMilliSeconds == 0){
+  if(whiteMilliSeconds == 0) || (blackMilliSeconds == 0){
     timersFinished = 1;
   }
-  static long pausedStart = 1;
+  static long whitePausedStart = 1;
+  static long blackPausedStart = 1;
   bool careAboutPause = 0;
+  static bool whiteJustEnded = 0;
+  static bool blackJustEnded = 0;
   bool backToPause = 0;
   bool pauseButtonPressed = digitalRead(pauseButtonPin);
   pauseButtonPressed = !pauseButtonPressed;
   if((pauseButtonPressed) && (!pauseButtonChanged)){
-    pauseButtonChanged = 1;
     backToPause = 1;
     timersRunning = !timersRunning;
     if(timersRunning){
       careAboutPause = 1;
-      long moreTotalPaused = trackingMilliPlus - baseMilliSeconds;
-      totalPaused = totalPaused + moreTotalPaused;
+      long moreTotalPaused = whiteTrackingPlus - whiteBase;
+      moreTotalPaused = blackTrackingPlus - blackBase;
+      whiteTotalPaused = whiteTotalPaused + moreTotalPaused;
+      blackTotalPaused = blackTotalPaused + moreTotalPaused;
     }
     else{
-      pausedStart = trackingMilliMinus;
-      trackingMilliPlus = baseMilliSeconds;
+      whitePausedStart = whiteTrackingMinus;
+      blackPausedStart = blackTrackingMinus;
+      whiteTrackingPlus = whiteBase;
+      blackTrackingPlus = blackBase;
     }
-    baseMilliSeconds = totalMilliSeconds;
+    whiteBase = whiteMilliSeconds;
+    blackBase = blackMilliSeconds;
   }
   pauseButtonChanged = pauseButtonPressed;
   if(timersFinished){
     if(backToPause){
-      baseMilliSeconds = 1;
-      totalMilliSeconds = 1;
-      totalPaused++;
+      whiteBase = 1;
+      blackBase = 1;
+      whiteMilliSeconds = 1;
+      blackMilliSeconds = 1;
+      whiteTotalPaused++;
+      blackTotalPaused++;
       timersRunning = 0;
-      pausedStart = trackingMilliMinus;
-      delay(1000);
+      whitePausedStart = trackingWhiteMinus;
+      whitePausedStart = trackingWhitePlus;
+      delay(3000);
     }
     else{
       finishedTimers();
@@ -71,7 +84,35 @@ void loop() {
   }
   else{
     if(timersRunning){
-      white(pausedStart, careAboutPause);
+      if(whiteTurn){
+        white(whitePausedStart, careAboutPause, blackJustEnded);
+        static bool whiteButtonChanged;
+        bool whiteButtonPressed = digitalRead(whiteButtonPin);
+        whiteButtonPressed = !whiteButtonPressed;
+        if((whiteButtonPressed) && (!whiteButtonChanged)){
+          whiteTurn = 0;
+          whiteJustEnded = 1;
+          bool moreBlackPaused = blackTrackingPlus - blackBase;
+          blackTotalPaused = blackTotalPaused + moreBlackPlaused;
+        }
+        whiteBase = whiteMilliSeconds;
+        whiteButtonChanged = whiteButtonPressed;
+      }
+      else{
+        white(blackPausedStart, careAboutPause, whiteJustEnded);
+        static blackButtonChanged;
+        bool blackButtonPressed = digitalRead(blackButtonPin);
+        blackButtonPressed = !blackButtonPressed;
+        if((blackButtonPressed) && (!blackButtonChanged)){
+          blackTurn = 0;
+          blackJustEnded = 1;
+          bool moreWhitePaused = whiteTrackingPlus - whiteBase;
+          whiteTotalPaused = whiteTotalPaused + moreWhitePlaused;
+        }
+        blackBase = blackMilliSeconds;
+        blackButtonChanged = blackButtonPressed;
+      }
+
     }
     else{
       pausedTimers();
