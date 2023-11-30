@@ -68,6 +68,41 @@ void loop() {
     blackBase = blackMilliSeconds;
   }
   pauseButtonChanged = pauseButtonPressed;
+  white(whitePausedStart);
+  static bool whiteButtonChanged;
+  bool whiteButtonPressed = digitalRead(whiteButtonPin);
+  whiteButtonPressed = !whiteButtonPressed;
+  if((whiteButtonPressed) && (!whiteButtonChanged)){
+    whiteTurn = 0;
+    whiteJustEnded = 1;
+    bool moreBlackPaused = blackTrackingPlus - blackBase;
+    blackTotalPaused = blackTotalPaused + moreBlackPlaused;
+  }
+  whiteBase = whiteMilliSeconds;
+  whiteButtonChanged = whiteButtonPressed;
+  black(blackPausedStart);
+  static blackButtonChanged;
+  bool blackButtonPressed = digitalRead(blackButtonPin);
+  blackButtonPressed = !blackButtonPressed;
+  if((blackButtonPressed) && (!blackButtonChanged)){
+    blackTurn = 0;
+    blackJustEnded = 1;
+    bool moreWhitePaused = whiteTrackingPlus - whiteBase;
+    whiteTotalPaused = whiteTotalPaused + moreWhitePlaused;
+  }
+  blackBase = blackMilliSeconds;
+  blackButtonChanged = blackButtonPressed;
+  
+  if(whiteTurn) && (white
+  
+  static bool otherButtonChanged;
+  static bool doAddition = 1;
+  bool otherButtonPressed = digitalRead(otherButtonPin);
+  otherButtonPressed = !otherButtonPressed;
+    if((otherButtonPressed) && (!otherButtonChanged)){
+	  doAddition = !doAddition;
+    }
+  otherButtonChanged = otherButtonPressed;
   
   if(timersFinished){
     if(backToPause){
@@ -90,31 +125,9 @@ void loop() {
     if(timersRunning){
       if(whiteTurn){
         white(whitePausedStart);
-        static bool whiteButtonChanged;
-        bool whiteButtonPressed = digitalRead(whiteButtonPin);
-        whiteButtonPressed = !whiteButtonPressed;
-        if((whiteButtonPressed) && (!whiteButtonChanged)){
-          whiteTurn = 0;
-          whiteJustEnded = 1;
-          bool moreBlackPaused = blackTrackingPlus - blackBase;
-          blackTotalPaused = blackTotalPaused + moreBlackPlaused;
-        }
-        whiteBase = whiteMilliSeconds;
-        whiteButtonChanged = whiteButtonPressed;
       }
       else{
         black(blackPausedStart);
-        static blackButtonChanged;
-        bool blackButtonPressed = digitalRead(blackButtonPin);
-        blackButtonPressed = !blackButtonPressed;
-        if((blackButtonPressed) && (!blackButtonChanged)){
-          blackTurn = 0;
-          blackJustEnded = 1;
-          bool moreWhitePaused = whiteTrackingPlus - whiteBase;
-          whiteTotalPaused = whiteTotalPaused + moreWhitePlaused;
-        }
-        blackBase = blackMilliSeconds;
-        blackButtonChanged = blackButtonPressed;
       }
 
     }
@@ -126,13 +139,6 @@ void loop() {
 
 
 void pausedTimers(){
-  static bool otherButtonChanged;
-  static bool doAddition = 1;
-  bool otherButtonPressed = digitalRead(otherButtonPin);
-  otherButtonPressed = !otherButtonPressed;
-    if((otherButtonPressed) && (!otherButtonChanged)){
-	  doAddition = !doAddition;
-    }
     static bool whiteButtonChanged;
     bool whiteButtonPressed = digitalRead(whiteButtonPin);
     whiteButtonPressed = !whiteButtonPressed;
@@ -144,7 +150,6 @@ void pausedTimers(){
     }
     whiteBase = whiteMilliSeconds;
     whiteButtonChanged = whiteButtonPressed;
-  otherButtonChanged = otherButtonPressed;
   long minutesInput = analogRead(minutesKnob);
   long secondsInput = analogRead(secondsKnob);
   long minutesMap = map(minutesInput, 0, 1023, 0, 19);
