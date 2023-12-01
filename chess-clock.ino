@@ -62,6 +62,7 @@ void loop() {
     }
     whiteBase = whiteMilliSeconds;
     blackBase = blackMilliSeconds;
+    bothChanged = 1;
   }
   pauseButtonChanged = pauseButtonPressed;
 
@@ -79,6 +80,7 @@ void loop() {
         bool blackMorePaused = blackTrackingPlus - blackBase;
         blackTotalPaused = blackTotalPaused + blackMorePaused;
       }
+      whiteBase = whiteMilliSeconds;
     }
     else{
       if(bothChange){
@@ -92,9 +94,7 @@ void loop() {
         bothChange = 1;
       }
     }
-
   }
-  whiteBase = whiteMilliSeconds;
   whiteButtonChanged = whiteButtonPressed;
 
   static bool blackButtonChanged;
@@ -108,6 +108,7 @@ void loop() {
         bool whiteMorePaused = whiteTrackingPlus - whiteBase;
         whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
       }
+        blackBase = blackMilliSeconds;
     }
     else{
       if(bothChange){
@@ -123,7 +124,6 @@ void loop() {
     }
 
   }
-  blackBase = blackMilliSeconds;
   blackButtonChanged = blackButtonPressed;
 
   if (timersFinished) {
