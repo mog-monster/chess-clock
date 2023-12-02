@@ -18,6 +18,7 @@ int pauseButtonPin = A4;
 int otherButtonPin = A3;
 int secondsKnob = A2;
 int minutesKnob = A1;
+int addingMilliMinus;
 
 void setup() {
 
@@ -53,6 +54,7 @@ void loop() {
     timersRunning = !timersRunning;
     if (timersRunning) {
       timersJustRestarted = 1;
+      addingMilliMinus = 2;
       whiteMorePaused = whiteTrackingPlus - whiteBase;
       blackMorePaused = blackTrackingPlus - blackBase;
       whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
@@ -295,6 +297,11 @@ void white(long pausedStart) {
   whiteTotalPaused = whiteTotalPaused - whiteValueUnder;
   whiteValueUnder = 0;
   milliMinus = milliMinus - whiteTotalPaused;
+  if(addingMilliMinus > 0){
+    whiteTotalPaused = whiteTotalPaused + milliMinus;
+    milliMinus = 0;
+    addingMilliMinus--;
+  }
   whiteMilliSeconds = whiteBase - milliMinus;
   Serial.print("trackingWhiteMinus: ");
   Serial.println(whiteTrackingMinus);
@@ -348,6 +355,11 @@ void black(long pausedStart) {
   blackTotalPaused = blackTotalPaused - blackValueUnder;
   blackValueUnder = 0;
   milliMinus = milliMinus - blackTotalPaused;
+    if(addingMilliMinus > 0){
+    blackTotalPaused = blackTotalPaused + milliMinus;
+    milliMinus = 0;
+    addingMilliMinus--;
+  }
   blackMilliSeconds = blackBase - milliMinus;
   if (blackMilliSeconds <= 0) {
     blackValueUnder = blackMilliSeconds;
