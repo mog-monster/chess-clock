@@ -115,10 +115,10 @@ void loop() {
     else{
       if(bothChange){
         bothChange = 0;
-        whiteOrBlackChange = 1;
+        whiteOrBlackChange = 0;
       }
-      else if(whiteOrBlackChange = 0){
-        whiteOrBlackChange = 1;
+      else if(whiteOrBlackChange = 1){
+        whiteOrBlackChange = 0;
       }
       else{
         bothChange = 1;
@@ -184,7 +184,7 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
   long minutesInput = analogRead(minutesKnob);
   long secondsInput = analogRead(secondsKnob);
   long minutesMap = map(minutesInput, 0, 1023, 0, 19);
-  long secondsMap = map(secondsInput, 0, 1023, 0, 99);
+  long secondsMap = map(secondsInput, 0, 1023, 0, 60);
   long halfMinuteAdd = minutesMap * 30000;
   long decaMinuteAdd = secondsMap * 600000;
 
@@ -216,11 +216,11 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
       }
     }
   }
-  if(whiteMilliSeconds > 59999999){
-    whiteMilliSeconds = 59999999;
+  if(whiteMilliSeconds > 36000000){
+    whiteMilliSeconds = 36000000;
   }
-  if(blackMilliSeconds > 59999999){
-    blackMilliSeconds = 59999999;
+  if(blackMilliSeconds > 36000000){
+    blackMilliSeconds = 36000000;
   }
   if(whiteMilliSeconds < 1){
     whiteMilliSeconds = 1;
