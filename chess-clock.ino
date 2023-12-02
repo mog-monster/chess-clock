@@ -35,9 +35,12 @@ void loop() {
   if ((whiteMilliSeconds == 0) || (blackMilliSeconds == 0)) {
     timersFinished = 1;
   }
-  bool careAboutPause = 0;
+  bool timersJustRestarted = 0;
   bool whiteMorePaused;
   bool blackMorePaused;
+  static bool bothChange = 1;
+  static bool whiteOrBlackChange;
+  static bool whiteTurn = 1;
   static bool pauseButtonChanged;
   static bool timersRunning;
   static long whitePausedStart = 1;
@@ -49,26 +52,29 @@ void loop() {
     backToPause = 1;
     timersRunning = !timersRunning;
     if (timersRunning) {
-      careAboutPause = 1;
-      whiteMorePaused = whiteTrackingPlus - whiteBase;
-      blackMorePaused = whiteTotalPaused + whiteMorePaused;
+      timersJustRestarted = 1;
+      if(whiteOrBlackChange){
+        whiteMorePaused = whiteTrackingPlus - whiteBase;
+      }
+      else if(!whiteOrBlackChange){
+        blackMorePaused = blackTrackingPlus - blackBase;
+      }
+      else{
+        whiteMorePaused = whiteTrackingPlus - whiteBase;
+        blackMorePaused = blackTrackingPlus - blackBase;
+      }
       whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
       blackTotalPaused = blackTotalPaused + blackMorePaused;
+      bothChange = 1;
     } else {
-      whitePausedStart = whiteTrackingMinus;
-      blackPausedStart = blackTrackingMinus;
       whiteTrackingPlus = whiteBase;
       blackTrackingPlus = blackBase;
     }
     whiteBase = whiteMilliSeconds;
     blackBase = blackMilliSeconds;
-    bothChanged = 1;
   }
   pauseButtonChanged = pauseButtonPressed;
 
-  static bool bothChange = 1;
-  static bool whiteOrBlackChange;
-  static bool whiteTurn = 1;
   static bool whiteButtonChanged;
   bool whiteButtonPressed = digitalRead(whiteButtonPin);
   whiteButtonPressed = !whiteButtonPressed;
@@ -77,8 +83,7 @@ void loop() {
       if(whiteTurn){
         whiteTurn = 0;
         blackStarted = 1;
-        bool blackMorePaused = blackTrackingPlus - blackBase;
-        blackTotalPaused = blackTotalPaused + blackMorePaused;
+        whitePausedStart = whiteTrackingMinus;
       }
       whiteBase = whiteMilliSeconds;
     }
@@ -126,6 +131,16 @@ void loop() {
   }
   blackButtonChanged = blackButtonPressed;
 
+  if(timersJustRestarted){
+    if(whiteTurn){
+      whiteStarted = 1;
+      whitePausedStart = whiteTrackingMinus;
+    }
+    else{
+      blackStarted = 1;
+      blackPausedStart = blackTrackingMinus;
+    }
+  }
   if (timersFinished) {
     if (backToPause) {
       whiteBase = 1;
