@@ -85,7 +85,6 @@ void loop() {
         blackStarted = 1;
         whitePausedStart = whiteTrackingMinus;
       }
-      whiteBase = whiteMilliSeconds;
     }
     else{
       if(bothChange){
@@ -110,10 +109,8 @@ void loop() {
       if(!whiteTurn){
         whiteTurn = 1;
         whiteStarted = 1;
-        bool whiteMorePaused = whiteTrackingPlus - whiteBase;
-        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+        blackPausedStart = blackTrackingMinus;
       }
-        blackBase = blackMilliSeconds;
     }
     else{
       if(bothChange){
