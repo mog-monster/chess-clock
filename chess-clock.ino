@@ -5,11 +5,11 @@ long trackingMilliPlus;
 long totalPaused = 1;
 long valueUnderZero;
 int whiteButtonPin = A5;
-int blackButtonPin = A4;
-int pauseButtonPin = A3;
-int otherButtonPin = A2;
-int secondsKnob = A1;
-int minutesKnob = A0;
+int blackButtonPin = A0;
+int pauseButtonPin = A4;
+int otherButtonPin = A3;
+int secondsKnob = A2;
+int minutesKnob = A1;
 
 void setup() {
 
@@ -40,14 +40,16 @@ void loop() {
     timersRunning = !timersRunning;
     if(timersRunning){
       careAboutPause = 1;
-      long moreTotalPaused = trackingMilliPlus - baseMilliSeconds;
+      long moreTotalPaused = totalMilliSeconds - trackingMilliPlus;
+      Serial.println(totalMilliSeconds);
+      Serial.println(baseMilliSeconds);
+      baseMilliSeconds = baseMilliSeconds + moreTotalPaused;
       totalPaused = totalPaused + moreTotalPaused;
     }
     else{
       pausedStart = trackingMilliMinus;
-      trackingMilliPlus = baseMilliSeconds;
+      trackingMilliPlus = totalMilliSeconds;
     }
-    baseMilliSeconds = totalMilliSeconds;
   }
   pauseButtonChanged = pauseButtonPressed;
   if(timersFinished){
