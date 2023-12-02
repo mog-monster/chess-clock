@@ -53,20 +53,15 @@ void loop() {
     timersRunning = !timersRunning;
     if (timersRunning) {
       timersJustRestarted = 1;
-      if(whiteOrBlackChange){
-        whiteMorePaused = whiteTrackingPlus - whiteBase;
-      }
-      else if(!whiteOrBlackChange){
-        blackMorePaused = blackTrackingPlus - blackBase;
-      }
-      else{
-        whiteMorePaused = whiteTrackingPlus - whiteBase;
-        blackMorePaused = blackTrackingPlus - blackBase;
-      }
+      whiteMorePaused = whiteTrackingPlus - whiteBase;
+      blackMorePaused = blackTrackingPlus - blackBase;
       whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
       blackTotalPaused = blackTotalPaused + blackMorePaused;
       bothChange = 1;
-    } else {
+    } 
+    else {
+      whitePausedStart = whiteTrackingMinus;
+      blackPausedStart = blackTrackingMinus;
       whiteTrackingPlus = whiteBase;
       blackTrackingPlus = blackBase;
     }
@@ -131,11 +126,9 @@ void loop() {
   if(timersJustRestarted){
     if(whiteTurn){
       whiteStarted = 1;
-      whitePausedStart = whiteTrackingMinus;
     }
     else{
       blackStarted = 1;
-      blackPausedStart = blackTrackingMinus;
     }
   }
   if (timersFinished) {
@@ -287,14 +280,30 @@ void white(long pausedStart) {
   long milliMinus = millis();
   whiteTrackingMinus = milliMinus;
   if (whiteStarted) {
+    Serial.print("Milliminus. ");
+    Serial.println(milliMinus);
+    Serial.print("PausedStart: ");
+    Serial.println(pausedStart);
     long pausedDuration = milliMinus - pausedStart;
+    Serial.print("pauseDuration: ");
+    Serial.println(pausedDuration);
     whiteTotalPaused = whiteTotalPaused + pausedDuration;
     whiteStarted = 0;
+    Serial.print("whiteTOtalPaused: ");
+    Serial.println(whiteTotalPaused);
   }
   whiteTotalPaused = whiteTotalPaused - whiteValueUnder;
   whiteValueUnder = 0;
   milliMinus = milliMinus - whiteTotalPaused;
   whiteMilliSeconds = whiteBase - milliMinus;
+  Serial.print("trackingWhiteMinus: ");
+  Serial.println(whiteTrackingMinus);
+  Serial.print("millIminus 2: ");
+  Serial.println(milliMinus);
+  Serial.print("whiteMillISeconds: ");
+  Serial.println(whiteMilliSeconds);
+  Serial.print("whiteBase");
+  Serial.println(whiteBase);
   if (whiteMilliSeconds <= 0) {
     whiteValueUnder = whiteMilliSeconds;
     whiteMilliSeconds = 0;
