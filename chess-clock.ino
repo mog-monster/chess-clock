@@ -44,7 +44,15 @@ void loop() {
     else{
       pausedStart = trackingMilliMinus;
       moreTotalPaused = baseMilliSeconds - totalMilliSeconds;
+      Serial.print("moreTotalPaused: ");
+      Serial.println(moreTotalPaused);
+      Serial.print("baseMilliSeconds: ");
+      Serial.println(baseMilliSeconds);
+      Serial.print("totalMillISeconds: ");
+      Serial.println(totalMilliSeconds);
       totalPaused = totalPaused + moreTotalPaused;
+      Serial.print("totalPaused: ");
+      Serial.println(totalPaused);
     }
     baseMilliSeconds = totalMilliSeconds;
   }
@@ -137,9 +145,13 @@ void white(long pausedStart, bool care){
   	long pausedDuration = milliMinus - pausedStart;
     totalPaused = totalPaused + pausedDuration;
   }
+  Serial.print("totalPaused after durationAdded: ");
+  Serial.println(totalPaused);
   totalPaused = totalPaused - valueUnderZero;
   valueUnderZero = 0;
   milliMinus = milliMinus - totalPaused;
+  Serial.print("should be equal to above: ");
+  Serial.println(totalPaused);
   totalMilliSeconds = baseMilliSeconds - milliMinus;
   if(totalMilliSeconds <= 0){
     valueUnderZero = totalMilliSeconds;
