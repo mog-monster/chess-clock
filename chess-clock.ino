@@ -1,7 +1,6 @@
 long baseMilliSeconds = 1;
 long totalMilliSeconds = 1;
 long trackingMilliMinus = 1;
-long trackingMilliPlus;
 long totalPaused = 1;
 long valueUnderZero;
 int whiteButtonPin = A5;
@@ -23,6 +22,7 @@ void setup() {
 
 void loop() {
 
+  static long moreTotalPaused;
   static bool pauseButtonChanged;
   static bool timersRunning;
   bool timersFinished = 0;
@@ -43,15 +43,16 @@ void loop() {
     }
     else{
       pausedStart = trackingMilliMinus;
-      long moreTotalPaused = baseMilliSeconds - totalMilliSeconds;
-      moreTotalPaused = trackingMilliPlus - baseMilliSeconds;
-
+      moreTotalPaused = baseMilliSeconds - totalMilliSeconds;
+      totalPaused = totalPaused + moreTotalPaused;
     }
     baseMilliSeconds = totalMilliSeconds;
   }
   pauseButtonChanged = pauseButtonPressed;
   if(timersFinished){
     if(backToPause){
+      moreTotalPaused = baseMilliSeconds - totalMilliSeconds;
+      totalPaused = totalPaused + moreTotalPaused;
       baseMilliSeconds = 1;
       totalMilliSeconds = 1;
       totalPaused++;
@@ -136,7 +137,7 @@ void white(long pausedStart, bool care){
   	long pausedDuration = milliMinus - pausedStart;
     totalPaused = totalPaused + pausedDuration;
   }
-  totalPaused = totalPaused - valueUnderZero;  
+  totalPaused = totalPaused - valueUnderZero;
   valueUnderZero = 0;
   milliMinus = milliMinus - totalPaused;
   totalMilliSeconds = baseMilliSeconds - milliMinus;
