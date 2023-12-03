@@ -34,8 +34,8 @@ void loop() {
     timersFinished = 1;
   }
   bool timersJustRestarted = 0;
-  static bool whiteMorePaused;
-  static bool blackMorePaused;
+  static long whiteMorePaused;
+  static long blackMorePaused;
   static bool bothChange = 1;
   static bool whiteOrBlackChange;
   static bool whiteTurn = 1;
