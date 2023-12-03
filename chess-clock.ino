@@ -110,7 +110,7 @@ void loop() {
         whiteStarted = 1;
         blackPausedStart = blackTrackingMinus;
         blackMorePaused = blackBase - blackMilliSeconds;
-        blackTotalPaused = blackTotalPaused + blackTotalPaused;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
       }
@@ -141,6 +141,10 @@ void loop() {
   }
   if (timersFinished) {
     if (backToPause) {
+      blackMorePaused = blackBase - blackMilliSeconds;
+      blackTotalPaused = blackTotalPaused + blackMorePaused;
+      whiteMorePaused = whiteBase - whiteMilliSeconds;
+      whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
       whiteBase = 1;
       blackBase = 1;
       whiteMilliSeconds = 1;
