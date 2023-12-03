@@ -59,10 +59,12 @@ void loop() {
       if(whiteTurn){
         whiteMorePaused = whiteBase - whiteMilliSeconds;
         whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+        Serial.println("white turn affirmative");
       }
       else{
         blackMorePaused = blackBase - blackMilliSeconds;
         blackTotalPaused = blackTotalPaused + blackMorePaused;
+        Serial.println("Black turn affirmative");
       }
     }
     whiteBase = whiteMilliSeconds;
@@ -83,6 +85,7 @@ void loop() {
         whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
+        Serial.println("whiteButtonPressed");
       }
     }
     else{
@@ -110,9 +113,10 @@ void loop() {
         whiteStarted = 1;
         blackPausedStart = blackTrackingMinus;
         blackMorePaused = blackBase - blackMilliSeconds;
-        blackTotalPaused = blackTotalPaused + blackTotalPaused;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
+        Serial.println("BlackButtonPressed");
       }
     }
     else{
@@ -141,6 +145,10 @@ void loop() {
   }
   if (timersFinished) {
     if (backToPause) {
+      whiteMorePaused = whiteBase - whiteMilliSeconds;
+      blackMorePaused = blackBase - blackMilliSeconds;
+      whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+      blackTotalPaused = blackTotalPaused + blackMorePaused;
       whiteBase = 1;
       blackBase = 1;
       whiteMilliSeconds = 1;
