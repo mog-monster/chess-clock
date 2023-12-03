@@ -4,8 +4,6 @@ long whiteMilliSeconds = 1;
 long blackMilliSeconds = 1;
 long whiteTrackingMinus = 1;
 long blackTrackingMinus = 1;
-long whiteTrackingPlus;
-long blackTrackingPlus;
 long whiteTotalPaused = 1;
 long blackTotalPaused = 1;
 long whiteValueUnder;
@@ -53,17 +51,19 @@ void loop() {
     timersRunning = !timersRunning;
     if (timersRunning) {
       timersJustRestarted = 1;
-      whiteMorePaused = whiteTrackingPlus - whiteBase;
-      blackMorePaused = blackTrackingPlus - blackBase;
-      whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
-      blackTotalPaused = blackTotalPaused + blackMorePaused;
       bothChange = 1;
     } 
     else {
       whitePausedStart = whiteTrackingMinus;
       blackPausedStart = blackTrackingMinus;
-      whiteTrackingPlus = whiteBase;
-      blackTrackingPlus = blackBase;
+      if(whiteTurn){
+        whiteMorePaused = whiteBase - whiteMilliSeconds;
+        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+      }
+      else{
+        blackMorePaused = blackBase - blackMilliSeconds;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
+      }
     }
     whiteBase = whiteMilliSeconds;
     blackBase = blackMilliSeconds;
@@ -79,9 +79,8 @@ void loop() {
         whiteTurn = 0;
         blackStarted = 1;
         whitePausedStart = whiteTrackingMinus;
-        whiteTrackingPlus = whiteBase;
-        blackMorePaused = blackTrackingPlus - blackBase;
-        blackTotalPaused = blackTotalPaused + blackMorePaused;
+        whiteMorePaused = whiteBase - whiteMilliSeconds;
+        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
       }
@@ -110,9 +109,8 @@ void loop() {
         whiteTurn = 1;
         whiteStarted = 1;
         blackPausedStart = blackTrackingMinus;
-        blackTrackingPlus = blackBase;
-        whiteMorePaused = whiteTrackingPlus - whiteBase;
-        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+        blackMorePaused = blackBase - blackMilliSeconds;
+        blackTotalPaused = blackTotalPaused + blackTotalPaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
       }
