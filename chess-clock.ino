@@ -201,23 +201,27 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
     else{
       if(whiteOrBlackChange){
         whiteMilliSeconds = whiteBase + halfMinuteAdd + decaMinuteAdd;
+        blackMilliSeconds = blackBase;
       }
       else{
             blackMilliSeconds = blackBase + halfMinuteAdd + decaMinuteAdd;
+            whiteMilliSeconds = whiteBase;
       }
     }
   } 
   else {
-     if(bothChange){
+    if(bothChange){
       whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
       blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
     }
     else{
       if(whiteOrBlackChange){
         whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
+        blackMilliSeconds = blackBase;
       }
       else{
             blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
+            whiteMilliSeconds = whiteBase;
       }
     }
   }
