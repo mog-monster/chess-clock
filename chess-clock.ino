@@ -40,12 +40,12 @@ void loop() {
     timersRunning = !timersRunning;
     if(timersRunning){
       careAboutPause = 1;
-      long moreTotalPaused = trackingMilliPlus - baseMilliSeconds;
-      totalPaused = totalPaused + moreTotalPaused;
     }
     else{
       pausedStart = trackingMilliMinus;
-      trackingMilliPlus = baseMilliSeconds;
+      long moreTotalPaused = baseMilliSeconds - totalMilliSeconds;
+      moreTotalPaused = trackingMilliPlus - baseMilliSeconds;
+
     }
     baseMilliSeconds = totalMilliSeconds;
   }
