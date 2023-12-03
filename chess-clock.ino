@@ -4,8 +4,6 @@ long whiteMilliSeconds = 1;
 long blackMilliSeconds = 1;
 long whiteTrackingMinus = 1;
 long blackTrackingMinus = 1;
-long whiteTrackingPlus;
-long blackTrackingPlus;
 long whiteTotalPaused = 1;
 long blackTotalPaused = 1;
 long whiteValueUnder;
@@ -36,8 +34,8 @@ void loop() {
     timersFinished = 1;
   }
   bool timersJustRestarted = 0;
-  bool whiteMorePaused;
-  bool blackMorePaused;
+  static long whiteMorePaused;
+  static long blackMorePaused;
   static bool bothChange = 1;
   static bool whiteOrBlackChange;
   static bool whiteTurn = 1;
@@ -53,17 +51,19 @@ void loop() {
     timersRunning = !timersRunning;
     if (timersRunning) {
       timersJustRestarted = 1;
-      whiteMorePaused = whiteTrackingPlus - whiteBase;
-      blackMorePaused = blackTrackingPlus - blackBase;
-      whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
-      blackTotalPaused = blackTotalPaused + blackMorePaused;
       bothChange = 1;
     } 
     else {
       whitePausedStart = whiteTrackingMinus;
       blackPausedStart = blackTrackingMinus;
-      whiteTrackingPlus = whiteBase;
-      blackTrackingPlus = blackBase;
+      if(whiteTurn){
+        whiteMorePaused = whiteBase - whiteMilliSeconds;
+        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+      }
+      else{
+        blackMorePaused = blackBase - blackMilliSeconds;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
+      }
     }
     whiteBase = whiteMilliSeconds;
     blackBase = blackMilliSeconds;
@@ -79,6 +79,10 @@ void loop() {
         whiteTurn = 0;
         blackStarted = 1;
         whitePausedStart = whiteTrackingMinus;
+        whiteMorePaused = whiteBase - whiteMilliSeconds;
+        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+        blackBase = blackMilliSeconds;
+        whiteBase = whiteMilliSeconds;
       }
     }
     else{
@@ -86,7 +90,7 @@ void loop() {
         bothChange = 0;
         whiteOrBlackChange = 1;
       }
-      else if(whiteOrBlackChange = 0){
+      else if(whiteOrBlackChange){
         whiteOrBlackChange = 1;
       }
       else{
@@ -105,6 +109,10 @@ void loop() {
         whiteTurn = 1;
         whiteStarted = 1;
         blackPausedStart = blackTrackingMinus;
+        blackMorePaused = blackBase - blackMilliSeconds;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
+        blackBase = blackMilliSeconds;
+        whiteBase = whiteMilliSeconds;
       }
     }
     else{
@@ -112,7 +120,7 @@ void loop() {
         bothChange = 0;
         whiteOrBlackChange = 0;
       }
-      else if(whiteOrBlackChange = 1){
+      else if(whiteOrBlackChange){
         whiteOrBlackChange = 0;
       }
       else{
@@ -133,6 +141,16 @@ void loop() {
   }
   if (timersFinished) {
     if (backToPause) {
+      if(whiteTurn){
+        whiteMorePaused = whiteBase - whiteMilliSeconds;
+        whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
+        whitePausedStart = whiteTrackingMinus;
+      }
+      else{
+        blackMorePaused = blackBase - blackMilliSeconds;
+        blackTotalPaused = blackTotalPaused + blackMorePaused;
+        blackPausedStart = blackTrackingMinus;
+      }
       whiteBase = 1;
       blackBase = 1;
       whiteMilliSeconds = 1;
@@ -140,8 +158,7 @@ void loop() {
       whiteTotalPaused++;
       blackTotalPaused++;
       timersRunning = 0;
-      whitePausedStart = whiteTrackingMinus;
-      whitePausedStart = blackTrackingMinus;
+      whiteTurn = 1;
       delay(3000);
     } 
     else {
@@ -189,23 +206,27 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
     else{
       if(whiteOrBlackChange){
         whiteMilliSeconds = whiteBase + halfMinuteAdd + decaMinuteAdd;
+        blackMilliSeconds = blackBase;
       }
       else{
             blackMilliSeconds = blackBase + halfMinuteAdd + decaMinuteAdd;
+            whiteMilliSeconds = whiteBase;
       }
     }
   } 
   else {
-     if(bothChange){
+    if(bothChange){
       whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
       blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
     }
     else{
       if(whiteOrBlackChange){
         whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
+        blackMilliSeconds = blackBase;
       }
       else{
             blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
+            whiteMilliSeconds = whiteBase;
       }
     }
   }
@@ -280,30 +301,14 @@ void white(long pausedStart) {
   long milliMinus = millis();
   whiteTrackingMinus = milliMinus;
   if (whiteStarted) {
-    Serial.print("Milliminus. ");
-    Serial.println(milliMinus);
-    Serial.print("PausedStart: ");
-    Serial.println(pausedStart);
     long pausedDuration = milliMinus - pausedStart;
-    Serial.print("pauseDuration: ");
-    Serial.println(pausedDuration);
     whiteTotalPaused = whiteTotalPaused + pausedDuration;
     whiteStarted = 0;
-    Serial.print("whiteTOtalPaused: ");
-    Serial.println(whiteTotalPaused);
   }
   whiteTotalPaused = whiteTotalPaused - whiteValueUnder;
   whiteValueUnder = 0;
   milliMinus = milliMinus - whiteTotalPaused;
   whiteMilliSeconds = whiteBase - milliMinus;
-  Serial.print("trackingWhiteMinus: ");
-  Serial.println(whiteTrackingMinus);
-  Serial.print("millIminus 2: ");
-  Serial.println(milliMinus);
-  Serial.print("whiteMillISeconds: ");
-  Serial.println(whiteMilliSeconds);
-  Serial.print("whiteBase");
-  Serial.println(whiteBase);
   if (whiteMilliSeconds <= 0) {
     whiteValueUnder = whiteMilliSeconds;
     whiteMilliSeconds = 0;
