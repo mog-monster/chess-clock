@@ -20,9 +20,9 @@ int minutesKnob = A1;
 int whiteLatchPin = 4;
 int whiteClockPin = 2;
 int whiteDataPin = 6;
-int blackLatchPin = 13;
-int blackClockPin = 11;
-int blackDataPin = 9;
+int blackLatchPin = 11;
+int blackClockPin = 9;
+int blackDataPin = 13;
 
 int allBytes [10] = {B00000010, B10011110, B00100100, B00001100,
   B10011000, B01001000, B01000000, B00011110, B00000000,
