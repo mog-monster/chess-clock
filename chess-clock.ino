@@ -24,10 +24,9 @@ int blackLatchPin = 13;
 int blackClockPin = 11;
 int blackDataPin = 9;
 
-int allBytes [10] = {B11111100, B01100000, B11011010, B11110010,
-  B01100110, B10110110, B10111110, B11100000, B11111110,
-                   B11110110};
-
+int allBytes [10] = {B00000010, B10011110, B00100100, B00001100,
+  B10011000, B01001000, B01000000, B00011110, B00000000,
+                   B00001000};
 void setup() {
   pinMode(whiteButtonPin, INPUT_PULLUP);
   pinMode(blackButtonPin, INPUT_PULLUP);
@@ -379,8 +378,8 @@ void black(long pausedStart) {
 }
 
 void finishedTimers(){
-  int goodBytes [7] = {B00000000, B00000000, B11110110,
-      B01111010, B11111100, B11111100, B11110110};
+  int goodBytes [7] = {B11111110, B11111110, B00001000,
+      B10000100, B00000010, B00000010, B00001000};
 
   digitalWrite(whiteLatchPin, LOW);
   for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
