@@ -10,19 +10,34 @@ long whiteValueUnder;
 long blackValueUnder;
 bool blackStarted;
 bool whiteStarted;
+
 int whiteButtonPin = A5;
 int blackButtonPin = A0;
 int pauseButtonPin = A4;
 int otherButtonPin = A3;
 int secondsKnob = A2;
 int minutesKnob = A1;
+int whiteLatchPin = 4;
+int whiteClockPin = 2;
+int whiteDataPin = 6;
+int blackLatchPin = 11;
+int blackClockPin = 9;
+int blackDataPin = 13;
 
+int allBytes [10] = {B00000010, B10011110, B00100100, B00001100,
+  B10011000, B01001000, B01000000, B00011110, B00000000,
+                   B00001000};
 void setup() {
-
   pinMode(whiteButtonPin, INPUT_PULLUP);
   pinMode(blackButtonPin, INPUT_PULLUP);
   pinMode(pauseButtonPin, INPUT_PULLUP);
   pinMode(otherButtonPin, INPUT_PULLUP);
+  pinMode(whiteLatchPin, OUTPUT);
+  pinMode(whiteClockPin, OUTPUT);
+  pinMode(whiteDataPin, OUTPUT);
+  pinMode(blackLatchPin, OUTPUT);
+  pinMode(blackClockPin, OUTPUT);
+  pinMode(blackDataPin, OUTPUT);
   Serial.begin(9600);
   Serial.println();
 }
@@ -255,20 +270,14 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
   long decaMinutes = whiteMilliSeconds / 600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = whiteMilliSeconds / 6000000;
-  Serial.print(hectoMinutes);
-  Serial.print(" : ");
-  Serial.print(printedDecaMinutes);
-  Serial.print(" : ");
-  Serial.print(printedMinutes);
-  Serial.print(" :: ");
-  Serial.print(printedDecaSeconds);
-  Serial.print(" : ");
-  Serial.print(printedSeconds);
-  Serial.print(". :: ");
-  Serial.print(printedDeciSeconds);
-  Serial.print(" : ");
-  Serial.print(printedCentiSeconds);
-  Serial.print("       ");
+  long whiteSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  
+  digitalWrite(whiteLatchPin, LOW);
+  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
+  }
+  digitalWrite(whiteLatchPin, HIGH);
+  
   centiSeconds = blackMilliSeconds / 10;
   printedCentiSeconds = centiSeconds % 10;
   deciSeconds = blackMilliSeconds / 100;
@@ -282,19 +291,13 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
   decaMinutes = blackMilliSeconds / 600000;
   printedDecaMinutes = decaMinutes % 10;
   hectoMinutes = blackMilliSeconds / 6000000;
-  Serial.print(hectoMinutes);
-  Serial.print(" : ");
-  Serial.print(printedDecaMinutes);
-  Serial.print(" : ");
-  Serial.print(printedMinutes);
-  Serial.print(" :: ");
-  Serial.print(printedDecaSeconds);
-  Serial.print(" : ");
-  Serial.print(printedSeconds);
-  Serial.print(". :: ");
-  Serial.print(printedDeciSeconds);
-  Serial.print(" : ");
-  Serial.println(printedCentiSeconds);
+  long blackSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  
+  digitalWrite(blackLatchPin, LOW);
+  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+      shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
+  }
+  digitalWrite(blackLatchPin, HIGH);
 }
 
 void white(long pausedStart) {
@@ -326,20 +329,14 @@ void white(long pausedStart) {
   long decaMinutes = whiteMilliSeconds / 600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = whiteMilliSeconds / 6000000;
-  Serial.print(hectoMinutes);
-  Serial.print(" : ");
-  Serial.print(printedDecaMinutes);
-  Serial.print(" : ");
-  Serial.print(printedMinutes);
-  Serial.print(" :: ");
-  Serial.print(printedDecaSeconds);
-  Serial.print(" : ");
-  Serial.print(printedSeconds);
-  Serial.print(". :: ");
-  Serial.print(printedDeciSeconds);
-  Serial.print(" : ");
-  Serial.print(printedCentiSeconds);
-  Serial.println("    WHITE");
+  long whiteSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  
+  digitalWrite(whiteLatchPin, LOW);
+  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
+  }
+  digitalWrite(whiteLatchPin, HIGH);
+  
 }
 
 void black(long pausedStart) {
@@ -371,22 +368,28 @@ void black(long pausedStart) {
   long decaMinutes = blackMilliSeconds / 600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = blackMilliSeconds / 6000000;
-  Serial.print(hectoMinutes);
-  Serial.print(" : ");
-  Serial.print(printedDecaMinutes);
-  Serial.print(" : ");
-  Serial.print(printedMinutes);
-  Serial.print(" :: ");
-  Serial.print(printedDecaSeconds);
-  Serial.print(" : ");
-  Serial.print(printedSeconds);
-  Serial.print(". :: ");
-  Serial.print(printedDeciSeconds);
-  Serial.print(" : ");
-  Serial.print(printedCentiSeconds);
-  Serial.println("    BLACK");
+  long blackSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  
+  digitalWrite(blackLatchPin, LOW);
+  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+      shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
+  }
+  digitalWrite(blackLatchPin, HIGH);
 }
 
 void finishedTimers(){
-  Serial.println("g : o : o :: d : g. ::   :");
+  int goodBytes [7] = {B11111110, B11111110, B00001000,
+      B10000100, B00000010, B00000010, B00001000};
+
+  digitalWrite(whiteLatchPin, LOW);
+  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, goodBytes[whiteWorkingSegment]);
+  }
+  digitalWrite(whiteLatchPin, HIGH);
+  
+    digitalWrite(blackLatchPin, LOW);
+  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+      shiftOut(blackDataPin, blackClockPin, MSBFIRST, goodBytes[blackWorkingSegment]);
+  }
+  digitalWrite(blackLatchPin, HIGH);
 }
