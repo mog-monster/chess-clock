@@ -11,6 +11,20 @@ long blackValueUnder;
 bool blackStarted;
 bool whiteStarted;
 
+int deadByte = B11111111;
+int zeroByte = B00000011;
+int oneByte = B10011111;
+int twoByte = B00100101;
+int threeByte = B00001101;
+int fourByte = B10011000;
+int fiveByte = B01001001;
+int sixByte = B01000001;
+int sevenByte = B00011111;
+int eightByte = B00000001;
+int nineByte = B00001001;
+int deeByte = B10000101;
+int allBytes[10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, fiveByte, sixByte, sevenByte, eightByte, nineByte};
+
 int whiteButtonPin = A5;
 int blackButtonPin = A0;
 int pauseButtonPin = A4;
@@ -24,9 +38,6 @@ int blackLatchPin = 11;
 int blackClockPin = 9;
 int blackDataPin = 13;
 
-int allBytes [10] = {B00000010, B10011110, B00100100, B00001100,
-  B10011000, B01001000, B01000000, B00011110, B00000000,
-                   B00001000};
 void setup() {
   pinMode(whiteButtonPin, INPUT_PULLUP);
   pinMode(blackButtonPin, INPUT_PULLUP);
@@ -38,8 +49,6 @@ void setup() {
   pinMode(blackLatchPin, OUTPUT);
   pinMode(blackClockPin, OUTPUT);
   pinMode(blackDataPin, OUTPUT);
-  Serial.begin(9600);
-  Serial.println();
 }
 
 void loop() {
@@ -291,14 +300,13 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
   decaMinutes = blackMilliSeconds / 600000;
   printedDecaMinutes = decaMinutes % 10;
   hectoMinutes = blackMilliSeconds / 6000000;
-  long blackSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  long blackSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
   
   digitalWrite(blackLatchPin, LOW);
   for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
       shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
   }
   digitalWrite(blackLatchPin, HIGH);
-  Serial.println("paused timers");
 }
 
 void white(long pausedStart) {
@@ -337,7 +345,6 @@ void white(long pausedStart) {
       shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
   }
   digitalWrite(whiteLatchPin, HIGH);
-  Serial.println("white");
 }
 
 void black(long pausedStart) {
@@ -369,30 +376,25 @@ void black(long pausedStart) {
   long decaMinutes = blackMilliSeconds / 600000;
   long printedDecaMinutes = decaMinutes % 10;
   long hectoMinutes = blackMilliSeconds / 6000000;
-  long blackSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+  long blackSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
   
   digitalWrite(blackLatchPin, LOW);
   for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
       shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
   }
   digitalWrite(blackLatchPin, HIGH);
-  Serial.println("black");
 }
 
 void finishedTimers(){
-  int goodBytes [7] = {B11111110, B11111110, B00001000,
-      B10000100, B00000010, B00000010, B00001000};
+  int goodWhiteBytes [7] = {deadByte, deadByte, nineByte, deeByte, zeroByte, zeroByte, nineByte};
+  int goodBlackBytes [7] = {nineByte, zeroByte, zeroByte, deeByte, nineByte, deadByte, deadByte};
 
   digitalWrite(whiteLatchPin, LOW);
-  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
-      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, goodBytes[whiteWorkingSegment]);
+  digitalWrite(blackLatchPin, LOW);
+  for (int currentSegment = 0; currentSegment < 7; currentSegment++){
+      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, goodWhiteBytes[currentSegment]);
+      shiftOut(blackDataPin, blackClockPin, MSBFIRST, goodBlackBytes[currentSegment]);
   }
   digitalWrite(whiteLatchPin, HIGH);
-  
-    digitalWrite(blackLatchPin, LOW);
-  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
-      shiftOut(blackDataPin, blackClockPin, MSBFIRST, goodBytes[blackWorkingSegment]);
-  }
   digitalWrite(blackLatchPin, HIGH);
-  Serial.println("finished timers");
 }
