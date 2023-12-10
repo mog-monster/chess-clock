@@ -298,6 +298,7 @@ void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
       shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
   }
   digitalWrite(blackLatchPin, HIGH);
+  Serial.println("paused timers");
 }
 
 void white(long pausedStart) {
@@ -336,7 +337,7 @@ void white(long pausedStart) {
       shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
   }
   digitalWrite(whiteLatchPin, HIGH);
-  
+  Serial.println("white");
 }
 
 void black(long pausedStart) {
@@ -375,6 +376,7 @@ void black(long pausedStart) {
       shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
   }
   digitalWrite(blackLatchPin, HIGH);
+  Serial.println("black");
 }
 
 void finishedTimers(){
@@ -392,4 +394,5 @@ void finishedTimers(){
       shiftOut(blackDataPin, blackClockPin, MSBFIRST, goodBytes[blackWorkingSegment]);
   }
   digitalWrite(blackLatchPin, HIGH);
+  Serial.println("finished timers");
 }
