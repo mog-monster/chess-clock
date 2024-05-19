@@ -10,6 +10,8 @@ long whiteValueUnder;
 long blackValueUnder;
 bool blackStarted;
 bool whiteStarted;
+int startingMode = 1;
+bool firstTime = 1;
 
 int deadByte = B11111111;
 int zeroByte = B00000011;
@@ -28,9 +30,8 @@ int allBytes[10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, fiveByte, s
 int whiteButtonPin = A5;
 int blackButtonPin = A0;
 int pauseButtonPin = A4;
-int otherButtonPin = A3;
-int secondsKnob = A2;
-int minutesKnob = A1;
+int upButtonPin = A3;
+int downButtonPin = A2;
 int whiteLatchPin = 4;
 int whiteClockPin = 2;
 int whiteDataPin = 6;
@@ -42,7 +43,8 @@ void setup() {
   pinMode(whiteButtonPin, INPUT_PULLUP);
   pinMode(blackButtonPin, INPUT_PULLUP);
   pinMode(pauseButtonPin, INPUT_PULLUP);
-  pinMode(otherButtonPin, INPUT_PULLUP);
+  pinMode(upButtonPin, INPUT_PULLUP);
+  pinMode(downButtonPin, INPUT_PULLUP);
   pinMode(whiteLatchPin, OUTPUT);
   pinMode(whiteClockPin, OUTPUT);
   pinMode(whiteDataPin, OUTPUT);
@@ -60,8 +62,6 @@ void loop() {
   bool timersJustRestarted = 0;
   static long whiteMorePaused;
   static long blackMorePaused;
-  static bool bothChange = 1;
-  static bool whiteOrBlackChange;
   static bool whiteTurn = 1;
   static bool pauseButtonChanged;
   static bool timersRunning;
@@ -71,12 +71,11 @@ void loop() {
   bool pauseButtonPressed = digitalRead(pauseButtonPin);
   pauseButtonPressed = !pauseButtonPressed;
   if ((pauseButtonPressed) && (!pauseButtonChanged)) {
+    firstTime = 0;
     backToPause = 1;
     timersRunning = !timersRunning;
     if (timersRunning) {
-      timersJustRestarted = 1;
-      bothChange = 1;
-    } 
+      timersJustRestarted = 1;    } 
     else {
       whitePausedStart = whiteTrackingMinus;
       blackPausedStart = blackTrackingMinus;
@@ -107,18 +106,31 @@ void loop() {
         whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
-      }
-    }
-    else{
-      if(bothChange){
-        bothChange = 0;
-        whiteOrBlackChange = 1;
-      }
-      else if(whiteOrBlackChange){
-        whiteOrBlackChange = 1;
-      }
-      else{
-        bothChange = 1;
+        switch(startingMode){
+          case 2:
+          whiteMilliSeconds = whiteMilliSeconds + 100;
+          break;
+
+          case 3:
+          whiteMilliSeconds = whiteMilliSeconds + 300;
+          break;
+
+          case 4:
+          whiteMilliSeconds = whiteMilliSeconds + 500;
+          break;
+
+          case 5: 
+          whiteMilliSeconds = whiteMilliSeconds + 1000;
+          break;
+
+          case 6:
+          whiteMilliSeconds = whiteMilliSeconds + 1500;
+          break;
+
+          case 7:
+          whiteMilliSeconds = whiteMilliSeconds + 3000;
+          break;
+        }
       }
     }
   }
@@ -137,18 +149,31 @@ void loop() {
         blackTotalPaused = blackTotalPaused + blackMorePaused;
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
-      }
-    }
-    else{
-      if(bothChange){
-        bothChange = 0;
-        whiteOrBlackChange = 0;
-      }
-      else if(whiteOrBlackChange){
-        whiteOrBlackChange = 0;
-      }
-      else{
-        bothChange = 1;
+        switch(startingMode){
+          case 2:
+          blackMilliSeconds = blackMilliSeconds + 100;
+          break;
+
+          case 3:
+          blackMilliSeconds = blackMilliSeconds + 300;
+          break;
+
+          case 4:
+          blackMilliSeconds = blackMilliSeconds + 500;
+          break;
+
+          case 5: 
+          blackMilliSeconds = blackMilliSeconds + 1000;
+          break;
+
+          case 6:
+          blackMilliSeconds = blackMilliSeconds + 1500;
+          break;
+
+          case 7:
+          blackMilliSeconds = blackMilliSeconds + 3000;
+          break;
+        }
       }
     }
 
@@ -200,113 +225,129 @@ void loop() {
 
     } 
     else {
-      pausedTimers(bothChange, whiteOrBlackChange);
+      pausedTimers();
     }
   }
 }
 
 
-void pausedTimers(bool bothChange, bool whiteOrBlackChange) {
-  static bool otherButtonChanged;
-  static bool doAddition = 1;
-  bool otherButtonPressed = digitalRead(otherButtonPin);
-  otherButtonPressed = !otherButtonPressed;
-  if ((otherButtonPressed) && (!otherButtonChanged)) {
-    doAddition = !doAddition;
-  }
-  otherButtonChanged = otherButtonPressed;
-  long minutesInput = analogRead(minutesKnob);
-  long secondsInput = analogRead(secondsKnob);
-  long minutesMap = map(minutesInput, 0, 1023, 0, 19);
-  long secondsMap = map(secondsInput, 0, 1023, 0, 60);
-  long halfMinuteAdd = minutesMap * 30000;
-  long decaMinuteAdd = secondsMap * 600000;
+void pausedTimers() {
+  if (firstTime == 1)
+  {
+    static bool upButtonChanged;
+    bool upButtonPressed = digitalRead(upButtonPin);
+    upButtonPressed = !upButtonPressed;
+    if ((upButtonPressed) && (!upButtonChanged)) {
+      startingMode++;
+    }
+    upButtonChanged = upButtonPressed;
+    static bool downButtonChanged;
+    bool downButtonPressed = digitalRead(downButtonPin);
+    downButtonPressed = !downButtonPressed;
+    if ((downButtonPressed) && (!downButtonChanged)) {
+      startingMode--;
+    }
+    if (startingMode > 7){
+      startingMode = 7;
+    }
+    if (startingMode < 1){
+      startingMode = 1;
+    }
 
-  if (doAddition) {
-    if(bothChange){
-      whiteMilliSeconds = whiteBase + halfMinuteAdd + decaMinuteAdd;
-      blackMilliSeconds = blackBase + halfMinuteAdd + decaMinuteAdd;
+    digitalWrite(whiteLatchPin, LOW);
+    for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+        shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[startingMode]);
     }
-    else{
-      if(whiteOrBlackChange){
-        whiteMilliSeconds = whiteBase + halfMinuteAdd + decaMinuteAdd;
-        blackMilliSeconds = blackBase;
-      }
-      else{
-            blackMilliSeconds = blackBase + halfMinuteAdd + decaMinuteAdd;
-            whiteMilliSeconds = whiteBase;
-      }
+    digitalWrite(whiteLatchPin, HIGH);
+
+
+        digitalWrite(blackLatchPin, LOW);
+    for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+        shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[startingMode]);
     }
-  } 
-  else {
-    if(bothChange){
-      whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
-      blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
+    digitalWrite(blackLatchPin, HIGH);
+
+    switch(startingMode){
+      case 1:
+      whiteMilliSeconds = 60000;
+      blackMilliSeconds = 60000;
+      break;
+
+      case 2:
+      whiteMilliSeconds = 180000;
+      blackMilliSeconds = 180000;
+      break;
+
+      case 3:
+      whiteMilliSeconds = 300000;
+      blackMilliSeconds = 300000;
+      break;
+
+      case 4:
+      whiteMilliSeconds = 600000;
+      blackMilliSeconds = 600000;
+      break;
+
+      case 5:
+      whiteMilliSeconds = 900000;
+      blackMilliSeconds = 900000;
+      break;
+
+      case 6:
+      whiteMilliSeconds = 1800000;
+      blackMilliSeconds = 1800000;
+      break;
+
+      case 7:
+      whiteMilliSeconds = 5400000;
+      blackMilliSeconds = 5400000;
+      break;
     }
-    else{
-      if(whiteOrBlackChange){
-        whiteMilliSeconds = whiteBase - halfMinuteAdd - decaMinuteAdd;
-        blackMilliSeconds = blackBase;
-      }
-      else{
-            blackMilliSeconds = blackBase - halfMinuteAdd - decaMinuteAdd;
-            whiteMilliSeconds = whiteBase;
-      }
+  }
+  else{
+
+    long centiSeconds = whiteMilliSeconds / 10;
+    long printedCentiSeconds = centiSeconds % 10;
+    long deciSeconds = whiteMilliSeconds / 100;
+    long printedDeciSeconds = deciSeconds % 10;
+    long seconds = whiteMilliSeconds / 1000;
+    long printedSeconds = seconds % 10;
+    long decaSeconds = whiteMilliSeconds / 10000;
+    long printedDecaSeconds = decaSeconds % 6;
+    long minutes = whiteMilliSeconds / 60000;
+    long printedMinutes = minutes % 10;
+    long decaMinutes = whiteMilliSeconds / 600000;
+    long printedDecaMinutes = decaMinutes % 10;
+    long hectoMinutes = whiteMilliSeconds / 6000000;
+    long whiteSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
+    
+    digitalWrite(whiteLatchPin, LOW);
+    for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+        shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
     }
+    digitalWrite(whiteLatchPin, HIGH);
+    
+    centiSeconds = blackMilliSeconds / 10;
+    printedCentiSeconds = centiSeconds % 10;
+    deciSeconds = blackMilliSeconds / 100;
+    printedDeciSeconds = deciSeconds % 10;
+    seconds = blackMilliSeconds / 1000;
+    printedSeconds = seconds % 10;
+    decaSeconds = blackMilliSeconds / 10000;
+    printedDecaSeconds = decaSeconds % 6;
+    minutes = blackMilliSeconds / 60000;
+    printedMinutes = minutes % 10;
+    decaMinutes = blackMilliSeconds / 600000;
+    printedDecaMinutes = decaMinutes % 10;
+    hectoMinutes = blackMilliSeconds / 6000000;
+    long blackSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
+    
+    digitalWrite(blackLatchPin, LOW);
+    for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+        shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
+    }
+    digitalWrite(blackLatchPin, HIGH);
   }
-  if(whiteMilliSeconds > 36000000){
-    whiteMilliSeconds = 36000000;
-  }
-  if(blackMilliSeconds > 36000000){
-    blackMilliSeconds = 36000000;
-  }
-  if(whiteMilliSeconds < 1){
-    whiteMilliSeconds = 1;
-  }
-  if(blackMilliSeconds < 1){
-    blackMilliSeconds = 1;
-  }
-  long centiSeconds = whiteMilliSeconds / 10;
-  long printedCentiSeconds = centiSeconds % 10;
-  long deciSeconds = whiteMilliSeconds / 100;
-  long printedDeciSeconds = deciSeconds % 10;
-  long seconds = whiteMilliSeconds / 1000;
-  long printedSeconds = seconds % 10;
-  long decaSeconds = whiteMilliSeconds / 10000;
-  long printedDecaSeconds = decaSeconds % 6;
-  long minutes = whiteMilliSeconds / 60000;
-  long printedMinutes = minutes % 10;
-  long decaMinutes = whiteMilliSeconds / 600000;
-  long printedDecaMinutes = decaMinutes % 10;
-  long hectoMinutes = whiteMilliSeconds / 6000000;
-  long whiteSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
-  
-  digitalWrite(whiteLatchPin, LOW);
-  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
-      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
-  }
-  digitalWrite(whiteLatchPin, HIGH);
-  
-  centiSeconds = blackMilliSeconds / 10;
-  printedCentiSeconds = centiSeconds % 10;
-  deciSeconds = blackMilliSeconds / 100;
-  printedDeciSeconds = deciSeconds % 10;
-  seconds = blackMilliSeconds / 1000;
-  printedSeconds = seconds % 10;
-  decaSeconds = blackMilliSeconds / 10000;
-  printedDecaSeconds = decaSeconds % 6;
-  minutes = blackMilliSeconds / 60000;
-  printedMinutes = minutes % 10;
-  decaMinutes = blackMilliSeconds / 600000;
-  printedDecaMinutes = decaMinutes % 10;
-  hectoMinutes = blackMilliSeconds / 6000000;
-  long blackSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
-  
-  digitalWrite(blackLatchPin, LOW);
-  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
-      shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
-  }
-  digitalWrite(blackLatchPin, HIGH);
 }
 
 void white(long pausedStart) {
