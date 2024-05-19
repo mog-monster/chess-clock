@@ -124,9 +124,9 @@ void loop() {
           case 7:
           whiteMilliSeconds = whiteMilliSeconds + 3000;
           break;
+        }
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
-        }
       }
     }
   }
@@ -167,9 +167,9 @@ void loop() {
           case 7:
           blackMilliSeconds = blackMilliSeconds + 3000;
           break;
+        }
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
-        }
       }
     }
 
