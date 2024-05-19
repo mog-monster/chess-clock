@@ -102,27 +102,27 @@ void loop() {
         whiteTotalPaused = whiteTotalPaused + whiteMorePaused;
         switch(startingMode){
           case 2:
-          whiteMilliSeconds = whiteMilliSeconds + 100;
-          break;
-
-          case 3:
-          whiteMilliSeconds = whiteMilliSeconds + 300;
-          break;
-
-          case 4:
-          whiteMilliSeconds = whiteMilliSeconds + 500;
-          break;
-
-          case 5: 
           whiteMilliSeconds = whiteMilliSeconds + 1000;
           break;
 
+          case 3:
+          whiteMilliSeconds = whiteMilliSeconds + 3000;
+          break;
+
+          case 4:
+          whiteMilliSeconds = whiteMilliSeconds + 5000;
+          break;
+
+          case 5: 
+          whiteMilliSeconds = whiteMilliSeconds + 10000;
+          break;
+
           case 6:
-          whiteMilliSeconds = whiteMilliSeconds + 1500;
+          whiteMilliSeconds = whiteMilliSeconds + 15000;
           break;
 
           case 7:
-          whiteMilliSeconds = whiteMilliSeconds + 3000;
+          whiteMilliSeconds = whiteMilliSeconds + 30000;
           break;
         }
         blackBase = blackMilliSeconds;
@@ -145,27 +145,27 @@ void loop() {
         blackTotalPaused = blackTotalPaused + blackMorePaused;
         switch(startingMode){
           case 2:
-          blackMilliSeconds = blackMilliSeconds + 100;
-          break;
-
-          case 3:
-          blackMilliSeconds = blackMilliSeconds + 300;
-          break;
-
-          case 4:
-          blackMilliSeconds = blackMilliSeconds + 500;
-          break;
-
-          case 5: 
           blackMilliSeconds = blackMilliSeconds + 1000;
           break;
 
+          case 3:
+          blackMilliSeconds = blackMilliSeconds + 3000;
+          break;
+
+          case 4:
+          blackMilliSeconds = blackMilliSeconds + 5000;
+          break;
+
+          case 5: 
+          blackMilliSeconds = blackMilliSeconds + 10000;
+          break;
+
           case 6:
-          blackMilliSeconds = blackMilliSeconds + 1500;
+          blackMilliSeconds = blackMilliSeconds + 15000;
           break;
 
           case 7:
-          blackMilliSeconds = blackMilliSeconds + 3000;
+          blackMilliSeconds = blackMilliSeconds + 30000;
           break;
         }
         blackBase = blackMilliSeconds;
