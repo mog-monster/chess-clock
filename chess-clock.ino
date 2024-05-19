@@ -27,11 +27,9 @@ int nineByte = B00001001;
 int deeByte = B10000101;
 int allBytes[10] = {zeroByte, oneByte, twoByte, threeByte, fourByte, fiveByte, sixByte, sevenByte, eightByte, nineByte};
 
-int whiteButtonPin = A5;
+int whiteButtonPin = A4;
 int blackButtonPin = A0;
-int pauseButtonPin = A4;
-int upButtonPin = A3;
-int downButtonPin = A2;
+int pauseButtonPin = A2;
 int whiteLatchPin = 4;
 int whiteClockPin = 2;
 int whiteDataPin = 6;
@@ -43,8 +41,6 @@ void setup() {
   pinMode(whiteButtonPin, INPUT_PULLUP);
   pinMode(blackButtonPin, INPUT_PULLUP);
   pinMode(pauseButtonPin, INPUT_PULLUP);
-  pinMode(upButtonPin, INPUT_PULLUP);
-  pinMode(downButtonPin, INPUT_PULLUP);
   pinMode(whiteLatchPin, OUTPUT);
   pinMode(whiteClockPin, OUTPUT);
   pinMode(whiteDataPin, OUTPUT);
@@ -235,14 +231,14 @@ void pausedTimers() {
   if (firstTime == 1)
   {
     static bool upButtonChanged;
-    bool upButtonPressed = digitalRead(upButtonPin);
+    bool upButtonPressed = digitalRead(whiteButtonPin);
     upButtonPressed = !upButtonPressed;
     if ((upButtonPressed) && (!upButtonChanged)) {
       startingMode++;
     }
     upButtonChanged = upButtonPressed;
     static bool downButtonChanged;
-    bool downButtonPressed = digitalRead(downButtonPin);
+    bool downButtonPressed = digitalRead(blackButtonPin);
     downButtonPressed = !downButtonPressed;
     if ((downButtonPressed) && (!downButtonChanged)) {
       startingMode--;
