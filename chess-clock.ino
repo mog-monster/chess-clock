@@ -125,6 +125,7 @@ void loop() {
           whiteMilliSeconds = whiteMilliSeconds + 30000;
           break;
         }
+        printTimers(whiteMilliSeconds, 1);
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
       }
@@ -168,6 +169,7 @@ void loop() {
           blackMilliSeconds = blackMilliSeconds + 30000;
           break;
         }
+        printTimers(blackMilliSeconds, 1);
         blackBase = blackMilliSeconds;
         whiteBase = whiteMilliSeconds;
       }
@@ -363,26 +365,7 @@ void white(long pausedStart) {
     whiteValueUnder = whiteMilliSeconds;
     whiteMilliSeconds = 0;
   }
-  long centiSeconds = whiteMilliSeconds / 10;
-  long printedCentiSeconds = centiSeconds % 10;
-  long deciSeconds = whiteMilliSeconds / 100;
-  long printedDeciSeconds = deciSeconds % 10;
-  long seconds = whiteMilliSeconds / 1000;
-  long printedSeconds = seconds % 10;
-  long decaSeconds = whiteMilliSeconds / 10000;
-  long printedDecaSeconds = decaSeconds % 6;
-  long minutes = whiteMilliSeconds / 60000;
-  long printedMinutes = minutes % 10;
-  long decaMinutes = whiteMilliSeconds / 600000;
-  long printedDecaMinutes = decaMinutes % 10;
-  long hectoMinutes = whiteMilliSeconds / 6000000;
-  long whiteSegments [7] = {printedCentiSeconds, printedDeciSeconds, printedSeconds, printedDecaSeconds, printedMinutes, printedDecaMinutes, hectoMinutes};	
-  
-  digitalWrite(whiteLatchPin, LOW);
-  for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
-      shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[whiteSegments[whiteWorkingSegment]]);
-  }
-  digitalWrite(whiteLatchPin, HIGH);
+  printTimers(whiteMilliSeconds, 1);
 }
 
 void black(long pausedStart) {
@@ -401,26 +384,7 @@ void black(long pausedStart) {
     blackValueUnder = blackMilliSeconds;
     blackMilliSeconds = 0;
   }
-  long centiSeconds = blackMilliSeconds / 10;
-  long printedCentiSeconds = centiSeconds % 10;
-  long deciSeconds = blackMilliSeconds / 100;
-  long printedDeciSeconds = deciSeconds % 10;
-  long seconds = blackMilliSeconds / 1000;
-  long printedSeconds = seconds % 10;
-  long decaSeconds = blackMilliSeconds / 10000;
-  long printedDecaSeconds = decaSeconds % 6;
-  long minutes = blackMilliSeconds / 60000;
-  long printedMinutes = minutes % 10;
-  long decaMinutes = blackMilliSeconds / 600000;
-  long printedDecaMinutes = decaMinutes % 10;
-  long hectoMinutes = blackMilliSeconds / 6000000;
-  long blackSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
-  
-  digitalWrite(blackLatchPin, LOW);
-  for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
-      shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[blackSegments[blackWorkingSegment]]);
-  }
-  digitalWrite(blackLatchPin, HIGH);
+  printTimers(blackMilliSeconds, 0);
 }
 
 void finishedTimers(){
@@ -435,4 +399,37 @@ void finishedTimers(){
   }
   digitalWrite(whiteLatchPin, HIGH);
   digitalWrite(blackLatchPin, HIGH);
+}
+
+void printTimers(long currentMilliSeconds, bool isWhitePrinting){
+
+  long centiSeconds = currentMilliSeconds / 10;
+  long printedCentiSeconds = centiSeconds % 10;
+  long deciSeconds = currentMilliSeconds / 100;
+  long printedDeciSeconds = deciSeconds % 10;
+  long seconds = currentMilliSeconds / 1000;
+  long printedSeconds = seconds % 10;
+  long decaSeconds = currentMilliSeconds / 10000;
+  long printedDecaSeconds = decaSeconds % 6;
+  long minutes = currentMilliSeconds / 60000;
+  long printedMinutes = minutes % 10;
+  long decaMinutes = currentMilliSeconds / 600000;
+  long printedDecaMinutes = decaMinutes % 10;
+  long hectoMinutes = currentMilliSeconds / 6000000;
+  long currentSegments [7] = {hectoMinutes, printedDecaMinutes, printedMinutes, printedDecaSeconds, printedSeconds, printedDeciSeconds, printedCentiSeconds};	
+  
+  if(isWhitePrinting){
+      digitalWrite(whiteLatchPin, LOW);
+    for (int whiteWorkingSegment = 0; whiteWorkingSegment < 7; whiteWorkingSegment++){
+        shiftOut(whiteDataPin, whiteClockPin, MSBFIRST, allBytes[currentSegments[whiteWorkingSegment]]);
+    }
+    digitalWrite(blackLatchPin, HIGH);
+  }
+  else{
+    digitalWrite(blackLatchPin, LOW);
+    for (int blackWorkingSegment = 0; blackWorkingSegment < 7; blackWorkingSegment++){
+        shiftOut(blackDataPin, blackClockPin, MSBFIRST, allBytes[currentSegments[blackWorkingSegment]]);
+    }
+    digitalWrite(blackLatchPin, HIGH);
+  }
 }
